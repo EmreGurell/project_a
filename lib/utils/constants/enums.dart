@@ -1,0 +1,1 @@
+enum SubscriptionType { free, pro, proPlus }

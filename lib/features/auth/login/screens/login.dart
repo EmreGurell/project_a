@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:project_a/common/widgets/buttons/3d_button.dart';
+import 'package:project_a/features/home/presentation/pages/home_page.dart';
+import 'package:project_a/loading.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/image_paths.dart';
 import 'package:project_a/utils/constants/sizes.dart';
@@ -10,6 +11,23 @@ import 'package:project_a/utils/widgets/shadowed_text_field.dart';
 import 'package:project_a/features/auth/login/widgets/index.dart';
 
 class LoginPage extends StatelessWidget {
+  static const Duration _loginNavigateDuration = Duration(seconds: 6);
+
+  void _onLogin(BuildContext context) {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const LoadingScreen()));
+    Future.delayed(_loginNavigateDuration, () {
+      if (!context.mounted) return;
+      Navigator.of(context).pop();
+      if (!context.mounted) return;
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -82,9 +100,7 @@ class LoginPage extends StatelessWidget {
                           hintText: ProjectTexts.loginPasswordHint,
                           prefixIcon: const Icon(Icons.lock_outline),
                           suffixIcon: IconButton(
-                            icon: Icon(
-                              true ? Icons.visibility_off : Icons.visibility,
-                            ),
+                            icon: const Icon(Icons.visibility_off),
                             onPressed: () {},
                           ),
                         ),
@@ -111,7 +127,7 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 8),
                       Button3D(
                         text: ProjectTexts.loginButton,
-                        onPressed: () {},
+                        onPressed: () => _onLogin(context),
                       ),
                       const SizedBox(height: 8),
 

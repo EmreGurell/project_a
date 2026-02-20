@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:project_a/features/onboarding/presentation/pages/onboarding_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_a/common/bloc/app_entry/app_entry_state_cubit.dart';
 import 'package:project_a/utils/themes/theme.dart';
+import 'core/di/service_locator.dart';
+import 'core/router/app_router.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setupServiceLocator();
   runApp(const MyApp());
 }
 
@@ -12,10 +16,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: OnboardingScreen(),
-    );
-  }
+    return BlocProvider<AppEntryCubit>(create: (_) => sl<AppEntryCubit>(),
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        routerConfig: router,
+      ),
+    );}
 }

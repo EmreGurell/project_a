@@ -14,7 +14,7 @@ class ProjectTextTheme {
     bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
     bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
     labelLarge: TextStyle(
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: FontWeight.bold,
     ), // Login/Register butonları için
     labelMedium: TextStyle(

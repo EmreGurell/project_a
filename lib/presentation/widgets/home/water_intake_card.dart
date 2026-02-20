@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:project_a/utils/constants/sizes.dart';
 
 class WaterIntakeCard extends StatelessWidget {
   const WaterIntakeCard({
     super.key,
     this.currentGlasses = 9,
     this.dailyGoalGlasses = 12,
-    this.waterGlassAsset =
-        'assets/images/water_glass.png', // Dummy image buraya gelecek
+    this.waterGlassAsset = 'assets/images/water_glass.png',
   });
 
   final int currentGlasses;
@@ -20,19 +20,21 @@ class WaterIntakeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Toplam 6 adet dikey bar olduğunu varsayıyoruz (görsele göre)
     const int totalSegments = 6;
     double progressRatio = (currentGlasses / dailyGoalGlasses).clamp(0.0, 1.0);
     double filledSegments = progressRatio * totalSegments;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: const EdgeInsets.symmetric(
+        horizontal: ProjectSizes.pagePadding,
+        vertical: ProjectSizes.pagePadding / 2,
+      ),
       decoration: BoxDecoration(
         color: _cardBackground,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(20),
           bottomRight: Radius.circular(20),
-        ), // Görseldeki yumuşak köşeler
+        ),
       ),
       child: Row(
         children: [
@@ -48,7 +50,6 @@ class WaterIntakeCard extends StatelessWidget {
                 waterGlassAsset,
                 width: 60,
                 fit: BoxFit.contain,
-                // Resim yoksa gösterilecek placeholder
                 errorBuilder: (context, error, stackTrace) =>
                     const Icon(Icons.water_drop, color: _activeBlue, size: 30),
               ),

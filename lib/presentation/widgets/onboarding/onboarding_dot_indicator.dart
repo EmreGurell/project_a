@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_a/utils/constants/colors.dart';
+import 'package:project_a/utils/constants/sizes.dart';
 
 class OnboardingDotIndicator extends StatelessWidget {
   final int pageCount;
@@ -14,12 +15,8 @@ class OnboardingDotIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: ProjectColors.orange,
-        border: Border.all(color: ProjectColors.orange),
-      ),
+      color: Colors.transparent,
+      padding: const EdgeInsets.all(ProjectSizes.paddingSm),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(
@@ -27,10 +24,14 @@ class OnboardingDotIndicator extends StatelessWidget {
           (index) => Container(
             width: 8,
             height: 8,
-            margin: EdgeInsets.only(right: index < pageCount - 1 ? 8 : 0),
+            margin: EdgeInsets.only(
+              right: index < pageCount - 1 ? ProjectSizes.spaceBtwItems / 2 : 0,
+            ),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: currentIndex == index ? Colors.green : Colors.white,
+              color: currentIndex == index
+                  ? ProjectColors.orange
+                  : ProjectColors.gray,
             ),
           ),
         ),

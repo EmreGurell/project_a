@@ -14,31 +14,38 @@ abstract class AuthApiService{
 
 }
 
-class AuthApiServiceImpl extends AuthApiService{
+
+class AuthApiServiceImpl extends AuthApiService {
 
   @override
-  Future<Either> signUp(SignUpReqParam signUpReq) async {
-  try{
-  
-    var response = await sl<DioClient>().post(ApiEndpoints.register,
-    data:signUpReq.toMap());
+  Future<Either<String, Response>> signUp(SignUpReqParam signUpReq) async {
+    try {
+      final response = await sl<DioClient>().post(
+        ApiEndpoints.register,
+        data: signUpReq.toMap(),
+      );
 
-    return Left(response);
-   
-  }on DioException catch(e){
-   
-    return Right(e.response!.data['message']);
-  }}
-
-  @override
-  Future<Either> signIn(SignInReqParam signInReq) async{
-    try{
-      var response = await sl<DioClient>().post(ApiEndpoints.login,data:signInReq.toMap());
-      return Left(response);
-    }on DioException catch(e){
-      return Right(e.response!.data['message']);
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(
+        e.response?.data['message'] ?? "Bir hata oluştu",
+      );
     }
   }
 
+  @override
+  Future<Either<String, Response>> signIn(SignInReqParam signInReq) async {
+    try {
+      final response = await sl<DioClient>().post(
+        ApiEndpoints.login,
+        data: signInReq.toMap(),
+      );
 
+      return Right(response);
+    } on DioException catch (e) {
+      return Left(
+        e.response?.data['message'] ?? "Bir hata oluştu",
+      );
+    }
+  }
 }

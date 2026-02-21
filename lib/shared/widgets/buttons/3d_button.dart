@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_a/common/bloc/button/button_state.dart';
-import 'package:project_a/common/bloc/button/button_state_cubit.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 
 class Button3D extends StatefulWidget {
   final String text;
+  final String? loadingText; // Yükleme metni için yeni parametre
   final VoidCallback? onPressed;
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final double? iconSize;
+  final bool isLoading;
 
   const Button3D({
     super.key,
     required this.text,
+    this.loadingText, // Opsiyonel: verilmezse sadece spinner döner veya varsayılan metin görünür
     this.onPressed,
     this.leadingIcon,
     this.trailingIcon,
     this.iconSize,
+    this.isLoading = false,
   });
 
   @override
@@ -33,20 +34,16 @@ class _Button3DState extends State<Button3D> {
   static const Color shadowColor = Color(0xFFE68500);
 
   void _setPressed(bool value) {
+    if (widget.isLoading) return;
     setState(() => _pressed = value);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ButtonStateCubit, ButtonState>(
-      builder: (context, state) {
-        if (state is ButtonLoadingState) {
-          return _loading();
-        }
-
-        return _initial();
-      },
-    );
+    if (widget.isLoading) {
+      return _loading();
+    }
+    return _initial();
   }
 
   Widget _initial() {
@@ -87,9 +84,10 @@ class _Button3DState extends State<Button3D> {
             ],
             Text(
               widget.text,
-              style: Theme.of(
-                context,
-              ).textTheme.labelLarge!.copyWith(color: ProjectColors.white),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge!
+                  .copyWith(color: ProjectColors.white),
             ),
             if (widget.trailingIcon != null) ...[
               const SizedBox(width: 8),
@@ -119,12 +117,15 @@ class _Button3DState extends State<Button3D> {
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(vertical: ProjectSizes.spaceBtwItems, horizontal: ProjectSizes.spaceBtwItems*2),
+      padding: const EdgeInsets.symmetric(
+        vertical: ProjectSizes.spaceBtwItems,
+        horizontal: ProjectSizes.spaceBtwItems * 2,
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 18,
             width: 18,
             child: CircularProgressIndicator(
@@ -132,13 +133,17 @@ class _Button3DState extends State<Button3D> {
               color: Colors.white,
             ),
           ),
-          SizedBox(width: ProjectSizes.spaceBtwItems/2),
-          Text(
-            "Yükleniyor",
-            style: Theme.of(
-              context,
-            ).textTheme.labelLarge!.copyWith(color: ProjectColors.white),
-          ),
+          // Sadece loadingText boş değilse boşluk ve metin ekle
+          if (widget.loadingText != null) ...[
+            const SizedBox(width: ProjectSizes.spaceBtwItems / 2),
+            Text(
+              widget.loadingText!,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge!
+                  .copyWith(color: ProjectColors.white),
+            ),
+          ],
         ],
       ),
     );

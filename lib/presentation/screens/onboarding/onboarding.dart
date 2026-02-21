@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_a/core/router/route_names.dart';
 import 'package:project_a/domain/entities/onboarding/onboarding_pages_data.dart';
@@ -6,6 +7,7 @@ import 'package:project_a/data/models/onboarding/onboarding_page_model.dart';
 import 'package:project_a/presentation/widgets/onboarding/onboarding_bottom_bar.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 import 'package:project_a/utils/device/device_utility.dart';
+import '../../../common/bloc/app_entry/app_entry_state_cubit.dart';
 import '../../widgets/onboarding/onboarding_page_content.dart';
 import '../../widgets/onboarding/onboarding_skip_button.dart';
 import '../auth/login.dart';
@@ -40,8 +42,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
-  void _completeOnboarding() {
-  context.go(RouteNames.loginRoute);
+  void _completeOnboarding() async{
+    await context.read<AppEntryCubit>().completeOnboarding();
+    context.go(RouteNames.loginRoute);
+
   }
 
   @override

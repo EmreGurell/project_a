@@ -4,12 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../domain/entities/app_entry_status.dart';
 import '../../../domain/usecases/check_app_entry.dart';
+import '../../../domain/usecases/onboarding/complete_onboarding.dart';
 
 class AppEntryCubit extends Cubit<AppEntryState> {
 
   final CheckAppEntry checkAppEntryUseCase;
+  final CompleteOnboardingUseCase completeOnboardingUseCase;
 
-  AppEntryCubit(this.checkAppEntryUseCase)
+  AppEntryCubit(this.checkAppEntryUseCase, this.completeOnboardingUseCase)
       : super(AppEntryInitial());
 
   Future<void> checkAppStatus() async {
@@ -28,5 +30,8 @@ class AppEntryCubit extends Cubit<AppEntryState> {
         emit(AppEntryAuthenticated());
         break;
     }
+  }
+  Future<void> completeOnboarding() async {
+    await completeOnboardingUseCase();
   }
 }

@@ -1,18 +1,51 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_a/common/bloc/auth/auth_state.dart';
-import 'package:project_a/core/di/service_locator.dart';
-import 'package:project_a/domain/usecases/is_authenticated.dart';
+
+import '../../../data/models/auth/signin_req_params.dart';
+import '../../../data/models/auth/signup_req_params.dart';
+import '../../../domain/usecases/auth/signin.dart';
+import '../../../domain/usecases/auth/signup.dart';
+
 
 class AuthStateCubit extends Cubit<AuthState> {
-  AuthStateCubit() : super(AppInitialState());
+  final SignInUseCase signInUseCase;
+  final SignUpUseCase signUpUseCase;
 
-  void appStarted()async{
-    var isAuthendticated = await sl<IsAuthenticatedUseCase>().call();
+  AuthStateCubit({
+    required this.signInUseCase,
+    required this.signUpUseCase,
+  }) : super(AuthInitial());
 
-    if(isAuthendticated){
-      emit(Authenticated());
-    }else{
-      emit(UnAuthenticated());
+  Future<void> login(String email, String password) async {
+    emit(AuthLoading());
+
+    try {
+      final result = await signInUseCase(
+        param: SignInReqParam(email: email, password: password),
+      );
+
+      result.fold(
+            (failure) {
+          emit(AuthFailure(failure.message));
+        },
+            (user) {
+          emit(AuthSuccess());
+        },
+      );
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
     }
+  }
+  Future<void> register(String email, String password,String firstName,String lastName) async {
+    emit(AuthLoading());
+
+    final result = await signUpUseCase.call(param:
+      SignUpReqParam(email: email, password: password, firstName: firstName, lastName: lastName),
+    );
+
+    result.fold(
+          (failure) => emit(AuthFailure(failure.message)),
+          (_) => emit(AuthRegistered()),
+    );
   }
 }

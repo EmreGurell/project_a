@@ -15,7 +15,7 @@ import 'package:project_a/utils/device/device_utility.dart';
 import 'package:project_a/presentation/widgets/auth/shadowed_text_field.dart';
 
 import '../../../data/models/auth/signup_req_params.dart';
-import '../../../domain/usecases/signup.dart';
+import '../../../domain/usecases/auth/signup.dart';
 import '../../widgets/auth/form_titles.dart';
 import '../../widgets/auth/social_login.dart';
 
@@ -231,8 +231,8 @@ class _RegisterFormState extends State<_RegisterForm> {
           onPressed: () async {
             context.read<ButtonStateCubit>().execute(usecase: sl<SignUpUseCase>(),
               params: SignUpReqParam(
-                name: nameController.text.trim(),
-                surname: surnameController.text.trim(),
+                firstName: nameController.text.trim(),
+                lastName: surnameController.text.trim(),
                 email: emailController.text.trim(),
                 password: passwordController.text,
               ),
@@ -244,7 +244,7 @@ class _RegisterFormState extends State<_RegisterForm> {
         const SizedBox(height: ProjectSizes.spaceBtwItems),
 
         TextButton(
-          onPressed: () {},
+          onPressed: () => context.go(RouteNames.loginRoute),
           child: Text(
             ProjectTexts.registerHaveAccount,
             style: Theme.of(context)

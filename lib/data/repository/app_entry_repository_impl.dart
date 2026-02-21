@@ -34,4 +34,9 @@ class AppEntryRepositoryImpl implements AppEntryRepository {
 
     return AppEntryStatus.unauthenticated;
   }
+
+  @override
+  Future<void> setOnboardingSeen() async {
+    await localService.setOnboardingSeen();
+  }
 }

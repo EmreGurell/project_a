@@ -13,10 +13,19 @@ class AppTheme {
     primaryColor: ProjectColors.orange,
     scaffoldBackgroundColor: ProjectColors.white,
     textTheme: ProjectTextTheme.lightTextTheme,
-
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+        splashFactory: NoSplash.splashFactory,
+      ),
+    ),
     // chipTheme: CustomChipTheme.lightChipThemeData,
     // appBarTheme: CustomAppBarTheme.lightAppBarTheme,
-    // elevatedButtonTheme: CustomElevatedButtonTheme.lightElevatedButtonTheme,
+     elevatedButtonTheme: ElevatedButtonThemeData(
+       style: ButtonStyle(
+         overlayColor: WidgetStateProperty.all(Colors.transparent),
+         splashFactory: NoSplash.splashFactory,
+       ),),
     inputDecorationTheme: ProjectTextFieldTheme.lightTextFieldTheme,
     // bottomSheetTheme: CustomBottomSheetTheme.lightBottomSheetThemeTheme,
     //checkboxTheme: CustomCheckboxTheme.lightCheckboxTheme,

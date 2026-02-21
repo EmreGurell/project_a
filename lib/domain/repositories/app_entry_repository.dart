@@ -5,7 +5,7 @@ import '../entities/app_entry_status.dart';
 abstract class AppEntryRepository {
 
   Future<AppEntryStatus> checkAppEntry();
-
+  Future<void> setOnboardingSeen();
 }
 
 

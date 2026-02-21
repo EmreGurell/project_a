@@ -26,26 +26,26 @@ class AuthRepositoryImpl extends AuthRepository {
 
     return result.fold(
           (error) => Left(error),
-          (data) async {
-        final token = data.data['token'];
+          (response) async {
+        final token = response.data['data']['token'];
         await localService.saveToken(token);
-        return Right(data);
+        return Right(response);
       },
     );
   }
 
   @override
-  Future<Either<String, Response>> signIn(
+  Future<Either<String, String>> signIn(
       SignInReqParam signInReq) async {
 
     final result = await apiService.signIn(signInReq);
 
     return result.fold(
           (error) => Left(error),
-          (data) async {
-        final token = data.data['token'];
+          (response) async {
+        final token = response.data['data']['token'];
         await localService.saveToken(token);
-        return Right(data);
+        return Right(token);
       },
     );
   }

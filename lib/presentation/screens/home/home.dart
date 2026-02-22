@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:project_a/core/router/route_names.dart';
 import 'package:project_a/presentation/widgets/home/calorie_summary_card.dart';
 import 'package:project_a/presentation/widgets/home/water_intake_card.dart';
 import 'package:project_a/utils/constants/colors.dart';
@@ -279,7 +281,7 @@ class _MainBottomBar extends StatelessWidget {
               icon: const PhosphorIcon(PhosphorIconsRegular.usersThree),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () => context.go(RouteNames.profileRoute),
               icon: const PhosphorIcon(PhosphorIconsRegular.userCircle),
             ),
           ],

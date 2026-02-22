@@ -9,6 +9,7 @@ import '../../presentation/screens/auth/login.dart';
 import '../../presentation/screens/auth/register.dart';
 import '../../presentation/screens/home/home.dart';
 import '../../presentation/screens/onboarding/onboarding.dart';
+import '../../presentation/screens/profile/profile.dart';
 import '../../splash.dart';
 import '../di/service_locator.dart';
 
@@ -38,6 +39,10 @@ final router = GoRouter(
       builder: (context, state) => HomePage(),
     ),
 
+    GoRoute(
+      path: RouteNames.profileRoute,
+      builder: (context, state) => const ProfilePage(),
+    ),
 
     GoRoute(
       path: RouteNames.loginRoute,
@@ -49,11 +54,9 @@ final router = GoRouter(
             create: (_) => sl<AuthStateCubit>(),
             child: const LoginPage(),
           ),
-          transitionsBuilder:
-              (context, animation, secondaryAnimation, child) {
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
-              opacity:
-              CurveTween(curve: Curves.easeInOut).animate(animation),
+              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
               child: child,
             );
           },

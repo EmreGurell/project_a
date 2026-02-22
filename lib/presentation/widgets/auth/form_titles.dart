@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:project_a/utils/constants/sizes.dart';
-import 'package:project_a/utils/constants/texts.dart';
 import 'package:project_a/utils/themes/custom_themes/text_theme.dart';
 
 class FormTitles extends StatelessWidget {
-  const FormTitles({Key? key}) : super(key: key);
+  const FormTitles({super.key, required this.title, required this.subtitle});
+
+  final String title;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +14,9 @@ class FormTitles extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: ProjectSizes.spaceBtwSections),
-        Text(ProjectTexts.loginTitle, style: Theme.of(context).textTheme.title),
+        Text(title, style: Theme.of(context).textTheme.title),
         const SizedBox(height: ProjectSizes.spaceBtwItems / 8),
-        Text(
-          ProjectTexts.loginSubtitle,
-          style: Theme.of(context).textTheme.sectionHeadingDesc,
-        ),
+        Text(subtitle, style: Theme.of(context).textTheme.sectionHeadingDesc),
         const SizedBox(height: ProjectSizes.spaceBtwSections),
       ],
     );

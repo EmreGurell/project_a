@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-
+import 'package:project_a/l10n/app_localizations.dart';
+import 'package:project_a/shared/widgets/snackbar/custom_snackbar.dart';
 import 'package:project_a/shared/widgets/buttons/3d_button.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/image_paths.dart';
@@ -13,64 +14,65 @@ import 'package:project_a/presentation/widgets/auth/shadowed_text_field.dart';
 
 import '../../../common/bloc/auth/auth_state.dart';
 import '../../../common/bloc/auth/auth_state_cubit.dart';
+import '../../../core/errors/error_mapper.dart';
 import '../../../core/router/route_names.dart';
+import '../../../core/validation/form_validators.dart';
 import '../../widgets/auth/form_titles.dart';
 import '../../widgets/auth/social_login.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordObscure = true;
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final double screenHeight = DeviceUtility.getScreenHeight(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: Stack(
-        children: [
-          _buildBackground(screenHeight),
-          _buildFormContainer(screenHeight),
-          _buildMascot(screenHeight),
-        ],
+      body: BlocListener<AuthStateCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            context.go(RouteNames.homeRoute);
+          }
+          if (state is AuthFailure) {
+            final mappedMessage = ErrorMapper.getErrorMessage(
+              context,
+              state.message,
+            );
+            AppSnackbar.showError(context, message: mappedMessage);
+          }
+        },
+        child: Stack(
+          children: const [_LoginBackground(), _LoginCard(), _LoginMascot()],
+        ),
       ),
     );
   }
+}
 
-  Widget _buildBackground(double screenHeight) {
+class _LoginBackground extends StatelessWidget {
+  const _LoginBackground();
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned(
       left: 0,
       right: 0,
       top: 0,
-      height: screenHeight * 0.38,
-      child: Image.asset(
-        ImageAndAnimationPaths.authBg,
-        fit: BoxFit.cover,
-      ),
+      height: DeviceUtility.getScreenHeight(context) * 0.38,
+      child: Image.asset(ImageAndAnimationPaths.authBg, fit: BoxFit.cover),
     );
   }
+}
 
-  Widget _buildMascot(double screenHeight) {
+class _LoginMascot extends StatelessWidget {
+  const _LoginMascot();
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned(
       left: 0,
       right: 0,
       top: 20,
-      height: screenHeight * 0.38,
+      height: DeviceUtility.getScreenHeight(context) * 0.38,
       child: Padding(
         padding: const EdgeInsets.only(top: 24.0, left: 24.0, right: 24.0),
         child: Image.asset(
@@ -80,8 +82,14 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+}
 
-  Widget _buildFormContainer(double screenHeight) {
+class _LoginCard extends StatelessWidget {
+  const _LoginCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = DeviceUtility.getScreenHeight(context);
     return Positioned(
       left: 0,
       right: 0,
@@ -97,22 +105,53 @@ class _LoginPageState extends State<LoginPage> {
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(ProjectSizes.pagePadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const FormTitles(),
-              _buildEmailField(),
-              const SizedBox(height: 16),
-              _buildPasswordField(),
-              _buildForgotPasswordButton(),
-              const SizedBox(height: 8),
-              _buildLoginButton(),
-              const SizedBox(height: 8),
-              _buildSignUpButton(),
-              const SocialLogin(),
-            ],
-          ),
+          child: const _LoginForm(),
         ),
+      ),
+    );
+  }
+}
+
+class _LoginForm extends StatefulWidget {
+  const _LoginForm();
+
+  @override
+  State<_LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<_LoginForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordObscure = true;
+
+  AppLocalizations get l10n => AppLocalizations.of(context)!;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          FormTitles(title: l10n.welcome, subtitle: l10n.good_to_see_you),
+          _buildEmailField(),
+          const SizedBox(height: 16),
+          _buildPasswordField(),
+          _buildForgotPasswordButton(),
+          const SizedBox(height: 8),
+          _buildLoginButton(),
+          const SizedBox(height: 8),
+          _buildSignUpButton(),
+          const SocialLogin(),
+        ],
       ),
     );
   }
@@ -121,8 +160,9 @@ class _LoginPageState extends State<LoginPage> {
     return ShadowedTextField(
       controller: _emailController,
       keyboardType: TextInputType.emailAddress,
+      validator: (value) => FormValidators.email(value, l10n),
       decoration: InputDecoration(
-        labelText: ProjectTexts.loginEmailLabel,
+        labelText: l10n.email,
         hintText: ProjectTexts.loginEmailHint,
         prefixIcon: PhosphorIcon(PhosphorIconsRegular.envelope),
       ),
@@ -133,8 +173,9 @@ class _LoginPageState extends State<LoginPage> {
     return ShadowedTextField(
       controller: _passwordController,
       obscureText: _isPasswordObscure,
+      validator: (value) => FormValidators.password(value, l10n),
       decoration: InputDecoration(
-        labelText: ProjectTexts.loginPasswordLabel,
+        labelText: l10n.password,
         hintText: ProjectTexts.loginPasswordHint,
         prefixIcon: const PhosphorIcon(PhosphorIconsRegular.lock),
         suffixIcon: IconButton(
@@ -157,35 +198,28 @@ class _LoginPageState extends State<LoginPage> {
       child: TextButton(
         onPressed: () {},
         child: Text(
-          ProjectTexts.loginForgotPassword,
-          style: Theme.of(context)
-              .textTheme
-              .labelLarge!
-              .copyWith(decoration: TextDecoration.underline),
+          l10n.forgot_password,
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+            decoration: TextDecoration.underline,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildLoginButton() {
-    return BlocConsumer<AuthStateCubit, AuthState>(
-      listener: (context, state) {
-        if (state is AuthSuccess) {
-          context.go(RouteNames.homeRoute);
-        }
-        if (state is AuthFailure) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
-        }
-      },
+    return BlocBuilder<AuthStateCubit, AuthState>(
       builder: (context, state) {
         final isLoading = state is AuthLoading;
 
         return Button3D(
-          text: "Giriş Yap",
+          text: l10n.sign_in,
           isLoading: isLoading,
-          loadingText: "Giriş Yapılıyor...",
+          loadingText: l10n.sign_in_loading,
           onPressed: () {
+            if (!(_formKey.currentState?.validate() ?? false)) {
+              return;
+            }
             FocusScope.of(context).unfocus();
 
             context.read<AuthStateCubit>().login(
@@ -202,11 +236,10 @@ class _LoginPageState extends State<LoginPage> {
     return TextButton(
       onPressed: () => context.go(RouteNames.registerRoute),
       child: Text(
-        ProjectTexts.loginSignUp,
-        style: Theme.of(context)
-            .textTheme
-            .labelLarge!
-            .copyWith(decoration: TextDecoration.underline),
+        l10n.dont_have_account,
+        style: Theme.of(
+          context,
+        ).textTheme.labelLarge!.copyWith(decoration: TextDecoration.underline),
       ),
     );
   }

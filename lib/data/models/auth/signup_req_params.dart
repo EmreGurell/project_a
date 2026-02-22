@@ -11,12 +11,12 @@ class SignUpReqParam {
     required this.password,
   });
 
-  Map<String,dynamic> toMap(){
-    return <String,dynamic>{
-      'firstName':firstName,
-      'lastName':lastName,
-      'email':email,
-      'password':password
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'firstname': firstName,
+      'lastname': lastName,
+      'email': email,
+      'password': password,
     };
   }
 }

@@ -7,16 +7,12 @@ import 'package:project_a/core/di/service_locator.dart';
 import '../../models/auth/signin_req_params.dart';
 import '../../models/auth/signup_req_params.dart';
 
-
-abstract class AuthApiService{
+abstract class AuthApiService {
   Future<Either> signUp(SignUpReqParam signUpReq);
   Future<Either> signIn(SignInReqParam signInReq);
-
 }
 
-
 class AuthApiServiceImpl extends AuthApiService {
-
   @override
   Future<Either<String, Response>> signUp(SignUpReqParam signUpReq) async {
     try {
@@ -27,9 +23,11 @@ class AuthApiServiceImpl extends AuthApiService {
 
       return Right(response);
     } on DioException catch (e) {
-      return Left(
-        e.response?.data['message'] ?? "Bir hata oluştu",
-      );
+      if (e.response != null && e.response!.data != null) {
+        final String errorCode = e.response!.data['error'] ?? "UNKNOWN";
+        return Left(errorCode);
+      }
+      return Left("NETWORK_ERROR");
     }
   }
 
@@ -43,9 +41,11 @@ class AuthApiServiceImpl extends AuthApiService {
 
       return Right(response);
     } on DioException catch (e) {
-      return Left(
-        e.response?.data['message'] ?? "Bir hata oluştu",
-      );
+      if (e.response != null && e.response!.data != null) {
+        final String errorCode = e.response!.data['error'] ?? "UNKNOWN";
+        return Left(errorCode);
+      }
+      return Left("NETWORK_ERROR");
     }
   }
 }

@@ -5,8 +5,15 @@ import 'package:project_a/utils/constants/sizes.dart';
 
 class OnboardingPageContent extends StatelessWidget {
   final OnBoardingPageModel page;
+  final double title;
+  final double description;
 
-  const OnboardingPageContent({super.key, required this.page});
+  const OnboardingPageContent({
+    super.key,
+    required this.page,
+    required this.title,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +42,7 @@ class OnboardingPageContent extends StatelessWidget {
                 Text(
                   page.title,
                   style: TextStyle(
-                    fontSize: ProjectSizes.onboardingTitleFontSize,
+                    fontSize: title,
                     fontWeight: FontWeight.w700,
                   ),
                   textAlign: TextAlign.center,
@@ -44,7 +51,7 @@ class OnboardingPageContent extends StatelessWidget {
                 Text(
                   page.description,
                   style: TextStyle(
-                    fontSize: ProjectSizes.onboardingDescFontSize,
+                    fontSize: description,
                     fontWeight: FontWeight.w400,
                     color: ProjectColors.textGray,
                   ),

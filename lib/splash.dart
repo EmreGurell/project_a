@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project_a/core/router/route_names.dart';
 
 import 'common/bloc/app_entry/app_entry_state.dart';
 import 'common/bloc/app_entry/app_entry_state_cubit.dart';
@@ -11,7 +12,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   @override
   void initState() {
     super.initState();
@@ -22,22 +22,19 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return BlocListener<AppEntryCubit, AppEntryState>(
       listener: (context, state) {
-
         if (state is AppEntryOnboarding) {
-          context.go("/onboarding");
+          context.go(RouteNames.onboardingRoute);
         }
 
         if (state is AppEntryUnAuthenticated) {
-          context.go("/login");
+          context.go(RouteNames.loginRoute);
         }
 
         if (state is AppEntryAuthenticated) {
-          context.go("/home");
+          context.go(RouteNames.homeRoute);
         }
       },
-      child: Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      child: Scaffold(body: Center(child: CircularProgressIndicator())),
     );
   }
 }

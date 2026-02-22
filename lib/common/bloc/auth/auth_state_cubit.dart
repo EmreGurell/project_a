@@ -6,15 +6,12 @@ import '../../../data/models/auth/signup_req_params.dart';
 import '../../../domain/usecases/auth/signin.dart';
 import '../../../domain/usecases/auth/signup.dart';
 
-
 class AuthStateCubit extends Cubit<AuthState> {
   final SignInUseCase signInUseCase;
   final SignUpUseCase signUpUseCase;
 
-  AuthStateCubit({
-    required this.signInUseCase,
-    required this.signUpUseCase,
-  }) : super(AuthInitial());
+  AuthStateCubit({required this.signInUseCase, required this.signUpUseCase})
+    : super(AuthInitial());
 
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
@@ -25,27 +22,34 @@ class AuthStateCubit extends Cubit<AuthState> {
       );
 
       result.fold(
-            (failure) {
-          emit(AuthFailure(failure.message));
-        },
-            (user) {
-          emit(AuthSuccess());
-        },
+        (failureCode) => emit(AuthFailure(message: failureCode.toString())),
+        (token) => emit(AuthSuccess(token: token.toString())),
       );
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      emit(AuthFailure(message: e.toString()));
     }
   }
-  Future<void> register(String email, String password,String firstName,String lastName) async {
+
+  Future<void> register(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+  ) async {
     emit(AuthLoading());
 
-    final result = await signUpUseCase.call(param:
-      SignUpReqParam(email: email, password: password, firstName: firstName, lastName: lastName),
+    final result = await signUpUseCase.call(
+      param: SignUpReqParam(
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+      ),
     );
 
     result.fold(
-          (failure) => emit(AuthFailure(failure.message)),
-          (_) => emit(AuthRegistered()),
+      (failureCode) => emit(AuthFailure(message: failureCode.toString())),
+      (_) => emit(AuthRegistered()),
     );
   }
 }

@@ -20,48 +20,43 @@ import '../../domain/usecases/check_app_entry.dart';
 final sl = GetIt.instance;
 
 Future<void> setupServiceLocator() async {
-
   /// External
-  sl.registerLazySingleton<DioClient>(
-        () => DioClient(),
-  );
+  sl.registerLazySingleton<DioClient>(() => DioClient());
 
   ///Storage
   sl.registerLazySingleton<LocalStorageService>(
-        () => LocalStorageServiceImpl(),
-  );
-  /// Services
-  sl.registerLazySingleton<AuthApiService>(
-        () => AuthApiServiceImpl(),
+    () => LocalStorageServiceImpl(),
   );
 
+  /// Services
+  sl.registerLazySingleton<AuthApiService>(() => AuthApiServiceImpl());
+
   sl.registerLazySingleton<AuthLocalService>(
-        () => AuthLocalServiceImpl(storageService: sl()),
+    () => AuthLocalServiceImpl(storageService: sl()),
   );
 
   /// Repositories
   sl.registerLazySingleton<AuthRepository>(
-        () => AuthRepositoryImpl(
-      apiService: sl(),
-      localService: sl(),
-    ),
+    () => AuthRepositoryImpl(apiService: sl(), localService: sl()),
   );
 
   sl.registerLazySingleton<AppEntryRepository>(
-        () => AppEntryRepositoryImpl(
-      authRepository: sl(),
-      localService: sl(),
-    ),
+    () => AppEntryRepositoryImpl(authRepository: sl(), localService: sl()),
   );
 
   /// UseCases
   sl.registerLazySingleton(() => SignUpUseCase(authRepository: sl()));
-  sl.registerLazySingleton(()=>SignInUseCase(authRepository: sl()));
+  sl.registerLazySingleton(() => SignInUseCase(authRepository: sl()));
   sl.registerLazySingleton(() => IsAuthenticatedUseCase(authRepository: sl()));
   sl.registerLazySingleton<CheckAppEntry>(() => CheckAppEntry(sl()));
-  sl.registerLazySingleton<CompleteOnboardingUseCase>(()=> CompleteOnboardingUseCase(repository: sl()));
+  sl.registerLazySingleton<CompleteOnboardingUseCase>(
+    () => CompleteOnboardingUseCase(repository: sl()),
+  );
+
   /// Cubit
-  sl.registerFactory<AppEntryCubit>(() => AppEntryCubit(sl(),sl()));
-  sl.registerFactory<ButtonStateCubit>(()=>ButtonStateCubit());
-  sl.registerFactory<AuthStateCubit>(()=>AuthStateCubit(signInUseCase: sl(), signUpUseCase: sl()));
+  sl.registerFactory<AppEntryCubit>(() => AppEntryCubit(sl(), sl()));
+  sl.registerFactory<ButtonStateCubit>(() => ButtonStateCubit());
+  sl.registerFactory<AuthStateCubit>(
+    () => AuthStateCubit(signInUseCase: sl(), signUpUseCase: sl()),
+  );
 }

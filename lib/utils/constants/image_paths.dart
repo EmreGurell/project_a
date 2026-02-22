@@ -19,6 +19,7 @@ class ImageAndAnimationPaths {
 
   //Form
   static const form1 = "assets/images/form/form_mascot_1.png";
+  static const snackbarMascot = "assets/images/common/idk.png";
 
   //----- ANIMATIONS ----- //
   static const walk = "assets/images/login/vide.json";

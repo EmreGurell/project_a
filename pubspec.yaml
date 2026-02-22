@@ -50,6 +50,9 @@ dependencies:
   go_router: ^17.0.0
   json_annotation: ^4.9.0
   dartz: ^0.10.1
+  flutter_localizations:
+    sdk: flutter
+  formz: ^0.8.0
   
   # Localization
 
@@ -62,6 +65,7 @@ dev_dependencies:
   build_runner: ^2.4.0
 
 flutter:
+  generate: true
 
   uses-material-design: true
 
@@ -74,6 +78,7 @@ flutter:
     - assets/images/profile/
     - assets/images/food/
     - assets/images/recipes/
+    - assets/images/common/
 
   fonts:
     - family: Poppins

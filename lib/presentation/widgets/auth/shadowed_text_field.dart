@@ -34,7 +34,7 @@ class ShadowedTextField extends StatelessWidget {
     this.decoration,
     this.shadowBlur = 2.0,
     this.shadowOffset = const Offset(0, 2),
-    this.shadowColor = const Color(0x1A000000),
+    this.shadowColor = Colors.transparent,
   }) : super(key: key);
 
   @override
@@ -57,6 +57,7 @@ class ShadowedTextField extends StatelessWidget {
         maxLines: maxLines,
         minLines: minLines,
         obscureText: obscureText,
+        validator: validator,
         onChanged: onChanged,
         decoration:
             decoration ??

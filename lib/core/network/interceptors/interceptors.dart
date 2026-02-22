@@ -1,17 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
-
 class LoggerInterceptor extends Interceptor {
-  Logger logger = Logger(printer: PrettyPrinter(methodCount: 0, colors: true,printEmojis: true));
+  final Logger logger = Logger(
+    printer: PrettyPrinter(methodCount: 0, colors: false, printEmojis: false),
+  );
 
   @override
-  void onError( DioException err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     final options = err.requestOptions;
     final requestPath = '${options.baseUrl}${options.path}';
     logger.e('${options.method} request ==> $requestPath'); //Error log
-    logger.d('Error type: ${err.error} \n '
-        'Error message: ${err.message}'); //Debug log
+    logger.d(
+      'Error type: ${err.type}\n'
+      'Status code: ${err.response?.statusCode}\n'
+      'Error message: ${err.message}\n'
+      'Response data: ${err.response?.data}',
+    ); //Debug log
     handler.next(err); //Continue with the Error
   }
 
@@ -24,10 +29,12 @@ class LoggerInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    logger.d('STATUSCODE: ${response.statusCode} \n '
-        'STATUSMESSAGE: ${response.statusMessage} \n'
-        'HEADERS: ${response.headers} \n'
-        'Data: ${response.data}'); // Debug log
+    logger.d(
+      'STATUSCODE: ${response.statusCode} \n '
+      'STATUSMESSAGE: ${response.statusMessage} \n'
+      'HEADERS: ${response.headers} \n'
+      'Data: ${response.data}',
+    ); // Debug log
     handler.next(response); // continue with the Response
   }
 }

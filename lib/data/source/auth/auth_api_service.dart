@@ -8,8 +8,12 @@ import '../../models/auth/signin_req_params.dart';
 import '../../models/auth/signup_req_params.dart';
 
 abstract class AuthApiService {
+  //Posts
   Future<Either> signUp(SignUpReqParam signUpReq);
   Future<Either> signIn(SignInReqParam signInReq);
+
+  //Gets
+  Future<Either> getMe();
 }
 
 class AuthApiServiceImpl extends AuthApiService {
@@ -39,6 +43,22 @@ class AuthApiServiceImpl extends AuthApiService {
         data: signInReq.toMap(),
       );
 
+      return Right(response);
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.data != null) {
+        final String errorCode = e.response!.data['error'] ?? "UNKNOWN";
+        return Left(errorCode);
+      }
+      return Left("NETWORK_ERROR");
+    }
+  }
+
+  @override
+  Future<Either<String, Response>> getMe() async {
+    try {
+      final response = await sl<DioClient>().get(
+        ApiEndpoints.me,
+      ); // GET /users/me
       return Right(response);
     } on DioException catch (e) {
       if (e.response != null && e.response!.data != null) {

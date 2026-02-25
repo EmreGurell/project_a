@@ -1,12 +1,14 @@
 import 'package:get_it/get_it.dart';
 import 'package:project_a/common/bloc/auth/auth_state_cubit.dart';
 import 'package:project_a/common/bloc/button/button_state_cubit.dart';
+import 'package:project_a/common/bloc/user/user_bloc.dart';
 import 'package:project_a/core/network/dio_client.dart';
 import 'package:project_a/data/repository/app_entry_repository_impl.dart';
 import 'package:project_a/data/repository/auth_repository_impl.dart';
 import 'package:project_a/data/source/auth/auth_api_service.dart';
 import 'package:project_a/domain/repositories/app_entry_repository.dart';
 import 'package:project_a/domain/repositories/auth_repository.dart';
+import 'package:project_a/domain/usecases/auth/get_me.dart';
 import 'package:project_a/domain/usecases/auth/is_authenticated.dart';
 import 'package:project_a/domain/usecases/auth/signin.dart';
 import 'package:project_a/domain/usecases/auth/signup.dart';
@@ -52,6 +54,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<CompleteOnboardingUseCase>(
     () => CompleteOnboardingUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(() => GetMeUseCase(authRepository: sl()));
 
   /// Cubit
   sl.registerFactory<AppEntryCubit>(() => AppEntryCubit(sl(), sl()));
@@ -59,4 +62,7 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory<AuthStateCubit>(
     () => AuthStateCubit(signInUseCase: sl(), signUpUseCase: sl()),
   );
+
+  /// Bloc
+  sl.registerFactory<UserBloc>(() => UserBloc(getMeUseCase: sl()));
 }

@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:project_a/data/models/auth/user_model.dart';
 import 'package:project_a/data/source/auth/auth_api_service.dart';
+import 'package:project_a/domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/auth/signin_req_params.dart';
 import '../models/auth/signup_req_params.dart';
@@ -43,5 +45,15 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<bool> isAuthenticated() async {
     return await localService.isAuthenticated();
+  }
+
+  @override
+  Future<Either<String, UserEntity>> getMe() async {
+    final result = await apiService.getMe();
+    return result.fold((error) => Left(error), (response) {
+      // API'den gelen JSON → Model → Entity
+      final userModel = UserModel.fromJson(response.data['data']);
+      return Right(userModel.toEntity()); // ← Entity olarak Domain'e teslim
+    });
   }
 }

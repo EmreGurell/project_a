@@ -55,5 +55,9 @@
   "register_first_name_label": "First Name",
   "register_last_name_label": "Last Name",
   "register_button": "Sign Up",
-  "register_have_account": "Already have an account? Sign In"
+  "register_have_account": "Already have an account? Sign In",
+    "@home": {
+        "description": "----- HOME SCREEN -----"
+      },
+    "hello":"Hello"
 }

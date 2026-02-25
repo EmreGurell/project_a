@@ -154,4 +154,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get register_have_account => 'Hesabın var mı? Giriş Yap';
+
+  @override
+  String get hello => 'Merhaba';
 }

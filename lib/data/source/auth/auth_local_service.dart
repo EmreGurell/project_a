@@ -3,6 +3,7 @@ import 'package:project_a/utils/local_storage/storage_service.dart';
 abstract class AuthLocalService{
   Future<void> saveToken(String token);
   Future<bool> isAuthenticated();
+  Future<String?> getToken();
 }
 
 class AuthLocalServiceImpl extends AuthLocalService {
@@ -14,6 +15,9 @@ class AuthLocalServiceImpl extends AuthLocalService {
   @override
   Future<void> saveToken(String token) async {
     await storageService.saveToken(token);
+  }
+  Future<String?> getToken() async {
+    return await storageService.getToken();
   }
 
   @override

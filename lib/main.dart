@@ -9,7 +9,7 @@ import 'core/di/service_locator.dart';
 import 'core/router/app_router.dart';
 
 final ValueNotifier<Locale> appLocaleNotifier = ValueNotifier(
-  const Locale('tr'),
+  const Locale('en'),
 );
 
 Future<void> main() async {
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [Locale('tr'), Locale('en')],
+          supportedLocales: const [ Locale('en'),Locale('tr'),],
         ),
       ),
     );

@@ -55,5 +55,10 @@
   "register_first_name_label": "İsim",
   "register_last_name_label": "Soyisim",
   "register_button": "Kayıt Ol",
-  "register_have_account": "Hesabın var mı? Giriş Yap"
+  "register_have_account": "Hesabın var mı? Giriş Yap",
+
+  "@home": {
+      "description": "----- ANA SAYFA -----"
+    },
+  "hello":"Merhaba"
 }

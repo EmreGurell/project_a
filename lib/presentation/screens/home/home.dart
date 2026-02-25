@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:project_a/core/router/route_names.dart';
+import 'package:project_a/presentation/bloc/home/home_bloc.dart';
+import 'package:project_a/presentation/bloc/home/home_event.dart';
+import 'package:project_a/presentation/bloc/home/home_state.dart';
 import 'package:project_a/presentation/widgets/home/calorie_summary_card.dart';
 import 'package:project_a/presentation/widgets/home/water_intake_card.dart';
 import 'package:project_a/utils/constants/colors.dart';
@@ -11,7 +15,6 @@ import 'package:project_a/presentation/widgets/home/header.dart';
 import 'package:project_a/presentation/widgets/home/health_stats_row.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 import 'package:project_a/utils/device/device_utility.dart';
-
 import '../../../shared/widgets/buttons/headline.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,7 +24,18 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const _HomeAppBar(),
-      body: const _HomeBody(),
+      body: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          if (state is HomeLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is HomeLoaded) {
+            return const _HomeBody();
+          } else if (state is HomeError) {
+            return Center(child: Text(state.message));
+          }
+          return const SizedBox.shrink();
+        },
+      ),
       bottomNavigationBar: const HomeBottomNavigation(),
     );
   }
@@ -29,7 +43,6 @@ class HomePage extends StatelessWidget {
 
 class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const _HomeAppBar();
-
   @override
   Size get preferredSize => const Size.fromHeight(0);
 
@@ -39,7 +52,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       toolbarHeight: 0,
-      systemOverlayStyle: SystemUiOverlayStyle(
+      systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.white,
         statusBarIconBrightness: Brightness.dark,
       ),
@@ -67,9 +80,16 @@ class _HomeHeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.only(left: 24, right: 24, top: 24),
-      child: Header(),
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+      child: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          if (state is HomeLoaded) {
+            return Header(displayName: "${state.user.firstName} ${state.user.lastName}");
+          }
+          return const Header();
+        },
+      ),
     );
   }
 }
@@ -81,15 +101,43 @@ class _HomeScrollContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        _DatePickerSliver(),
-        _DailySummarySliver(),
-        _HealthStatsSliver(),
+        const _DatePickerSliver(),
+        const _DailySummarySliver(),
+        const _HealthStatsSliver(),
       ],
     );
   }
 }
 
+class _DatePickerSliver extends StatelessWidget {
+  const _DatePickerSliver();
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 24, bottom: 24),
+        child: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            if (state is HomeLoaded) {
+              return DatePicker(
+                state.dateRange.first, // Başlangıç tarihi (14 gün öncesi)
+                height: 84,
+                width: 56,
+                initialSelectedDate: state.selectedDate,
+                selectedTextColor: Colors.white,
+                // OnDateChange eventi eklediğinde buraya bağlayabilirsin
+              );
+            }
+            return const SizedBox(height: 84);
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class _DailySummarySliver extends StatelessWidget {
+  const _DailySummarySliver({super.key});
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -108,11 +156,19 @@ class _DailySummarySliver extends StatelessWidget {
               ),
             ),
             const SizedBox(height: ProjectSizes.spaceBtwItems),
-            const CalorieSummaryCard(),
+            // Beslenme verileri burada karta aktarılıyor
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                if (state is HomeLoaded) {
+                  return CalorieSummaryCard(nutrition: state.nutrition);
+                }
+                return const CalorieSummaryCard();
+              },
+            ),
             const SizedBox(height: ProjectSizes.spaceBtwItems),
-            Padding(
-              padding: const EdgeInsets.only(right: ProjectSizes.pagePadding),
-              child: const WaterIntakeCard(),
+            const Padding(
+              padding: EdgeInsets.only(right: ProjectSizes.pagePadding),
+              child: WaterIntakeCard(),
             ),
             const SizedBox(height: ProjectSizes.spaceBtwItems),
           ],
@@ -122,25 +178,8 @@ class _DailySummarySliver extends StatelessWidget {
   }
 }
 
-class _DatePickerSliver extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 24, bottom: 24),
-        child: DatePicker(
-          DateTime.now(),
-          height: 84,
-          width: 56,
-          initialSelectedDate: DateTime.now(),
-          selectedTextColor: Colors.white,
-        ),
-      ),
-    );
-  }
-}
-
 class _HealthStatsSliver extends StatelessWidget {
+  const _HealthStatsSliver({super.key});
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -150,9 +189,9 @@ class _HealthStatsSliver extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Headline(title: 'Sağlık Verileri', onTap: () {}),
-            SizedBox(height: 12),
-            HealthStatsRow(),
-            SizedBox(height: 24),
+            const SizedBox(height: 12),
+            const HealthStatsRow(),
+            const SizedBox(height: 24),
           ],
         ),
       ),

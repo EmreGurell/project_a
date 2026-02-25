@@ -1,7 +1,7 @@
 name: project_a
 description: "A new Flutter project."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 
 version: 1.0.0+1
@@ -50,11 +50,12 @@ dependencies:
   go_router: ^17.0.0
   json_annotation: ^4.9.0
   dartz: ^0.10.1
+
+  
+  # Localization
   flutter_localizations:
     sdk: flutter
   formz: ^0.8.0
-  
-  # Localization
 
 dev_dependencies:
   flutter_test:

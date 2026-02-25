@@ -26,7 +26,7 @@ class ProfilePage extends StatelessWidget {
               valueListenable: appLocaleNotifier,
               builder: (context, locale, _) {
                 return DropdownButtonFormField<String>(
-                  initialValue: locale.languageCode,
+                  value: locale.languageCode,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                   ),

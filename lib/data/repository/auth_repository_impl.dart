@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:project_a/data/source/auth/auth_api_service.dart';
+import '../../domain/entities/auth_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/auth/signin_req_params.dart';
 import '../models/auth/signup_req_params.dart';
@@ -10,38 +11,53 @@ class AuthRepositoryImpl extends AuthRepository {
   final AuthApiService apiService;
   final AuthLocalService localService;
 
-  AuthRepositoryImpl({required this.apiService, required this.localService});
+  AuthRepositoryImpl({
+    required this.apiService,
+    required this.localService,
+  });
 
   @override
-  Future<Either<String, Response>> signUp(SignUpReqParam signUpReq) async {
-    final result = await apiService.signUp(signUpReq);
+  Future<Either<String, AuthEntity>> signIn(
+      SignInReqParam params) async {
+    try {
+      final model = await apiService.signIn(params);
 
-    return result.fold((error) => Left(error), (response) async {
-      final token = response.data['data']['token'];
-      if (token == null || token is! String) {
-        return Left('INVALID_RESPONSE');
+      if (!model.success) {
+        return Left(model.message);
       }
-      await localService.saveToken(token);
-      return Right(response);
-    });
+
+      await localService.saveToken(model.token);
+
+      return Right(AuthEntity(token: model.token));
+    } on DioException catch (e) {
+      return Left(
+        e.response?.data['message'] ?? 'NETWORK_ERROR',
+      );
+    }
   }
 
   @override
-  Future<Either<String, String>> signIn(SignInReqParam signInReq) async {
-    final result = await apiService.signIn(signInReq);
+  Future<Either<String, AuthEntity>> signUp(
+      SignUpReqParam params) async {
+    try {
+      final model = await apiService.signUp(params);
 
-    return result.fold((error) => Left(error), (response) async {
-      final token = response.data['data']['token'];
-      if (token == null || token is! String) {
-        return Left('INVALID_RESPONSE');
+      if (!model.success) {
+        return Left(model.message);
       }
-      await localService.saveToken(token);
-      return Right(token);
-    });
+
+      await localService.saveToken(model.token);
+
+      return Right(AuthEntity(token: model.token));
+    } on DioException catch (e) {
+      return Left(
+        e.response?.data['message'] ?? 'NETWORK_ERROR',
+      );
+    }
   }
 
   @override
-  Future<bool> isAuthenticated() async {
-    return await localService.isAuthenticated();
+  Future<bool> isAuthenticated() {
+    return localService.isAuthenticated();
   }
 }

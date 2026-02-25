@@ -1,5 +1,4 @@
-import 'package:dartz/dartz.dart';
-import 'package:project_a/core/di/service_locator.dart';
+
 import 'package:project_a/core/usecase/usecase.dart';
 
 import '../../repositories/app_entry_repository.dart';

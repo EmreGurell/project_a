@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Header extends StatelessWidget {
-  const Header({super.key});
-
+  const Header({super.key, this.displayName});
+final String? displayName;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -27,7 +27,7 @@ class Header extends StatelessWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 Text(
-                  'Halit Göymen',
+                  displayName ?? "Kullanıcı",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                 ),
               ],

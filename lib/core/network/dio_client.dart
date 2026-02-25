@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:project_a/core/network/interceptors/auth_interceptor.dart';
 import 'package:project_a/core/network/interceptors/interceptors.dart';
+import 'package:project_a/data/source/auth/auth_local_service.dart';
 
 class DioClient {
   
   late final Dio _dio;
-  DioClient(): _dio = Dio(
+  DioClient({required AuthLocalService localService}): _dio = Dio(
     BaseOptions(
       headers: {
         'Content-Type': 'application/json; charset=UTF-8'
@@ -13,7 +15,7 @@ class DioClient {
       sendTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10)
     ),
-  )..interceptors.addAll([LoggerInterceptor()]);
+  )..interceptors.addAll([LoggerInterceptor(),AuthInterceptor(localService)]);
 
   // GET METHOD
   Future < Response > get(

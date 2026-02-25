@@ -150,4 +150,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get register_have_account => 'Already have an account? Sign In';
+
+  @override
+  String get hello => 'Hello';
 }

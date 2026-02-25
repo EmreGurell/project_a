@@ -163,7 +163,6 @@ class _LoginFormState extends State<_LoginForm> {
       validator: (value) => FormValidators.email(value, l10n),
       decoration: InputDecoration(
         labelText: l10n.email,
-        hintText: ProjectTexts.loginEmailHint,
         prefixIcon: PhosphorIcon(PhosphorIconsRegular.envelope),
       ),
     );
@@ -176,7 +175,6 @@ class _LoginFormState extends State<_LoginForm> {
       validator: (value) => FormValidators.password(value, l10n),
       decoration: InputDecoration(
         labelText: l10n.password,
-        hintText: ProjectTexts.loginPasswordHint,
         prefixIcon: const PhosphorIcon(PhosphorIconsRegular.lock),
         suffixIcon: IconButton(
           icon: Icon(

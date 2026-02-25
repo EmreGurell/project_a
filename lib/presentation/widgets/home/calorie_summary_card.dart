@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:project_a/domain/entities/nutrition/nutrition_entity.dart';
 import 'package:project_a/presentation/widgets/home/summary_card/calorie_circle_section.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 import 'summary_card/macro_progress_section.dart';
 
 class CalorieSummaryCard extends StatelessWidget {
+  final NutritionEntity? nutrition;
+
   const CalorieSummaryCard({
     super.key,
-    this.calories = 2400,
-    this.calorieProgress = .2,
-    this.carbProgress = 0.72,
-    this.proteinProgress = 0.58,
-    this.fatProgress = 0.38,
+    this.nutrition,
   });
-
-  final int calories;
-  final double calorieProgress;
-  final double carbProgress;
-  final double proteinProgress;
-  final double fatProgress;
 
   @override
   Widget build(BuildContext context) {
+    const double targetCalories = 2500;
+    const double targetCarbs = 300;
+    const double targetProtein = 150;
+    const double targetFat = 80;
+
+
+    final double calorieProgress = (nutrition?.totalCalories ?? 0) / targetCalories;
+    final double carbProgress = (nutrition?.carbs ?? 0) / targetCarbs;
+    final double proteinProgress = (nutrition?.protein ?? 0) / targetProtein;
+    final double fatProgress = (nutrition?.fat ?? 0) / targetFat;
+
     return Container(
       padding: const EdgeInsets.all(ProjectSizes.pagePadding),
       decoration: BoxDecoration(
@@ -42,11 +46,14 @@ class CalorieSummaryCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             MacroProgressSection(
-              carbProgress: carbProgress,
-              proteinProgress: proteinProgress,
-              fatProgress: fatProgress,
+              carbProgress: carbProgress.clamp(0.0, 1.0),
+              proteinProgress: proteinProgress.clamp(0.0, 1.0),
+              fatProgress: fatProgress.clamp(0.0, 1.0),
             ),
-            CalorieCircleSection(calories: calories, progress: calorieProgress),
+            CalorieCircleSection(
+              calories: nutrition?.totalCalories.toInt() ?? 0,
+              progress: calorieProgress.clamp(0.0, 1.0),
+            ),
           ],
         ),
       ),

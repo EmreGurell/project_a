@@ -13,8 +13,8 @@ class SignUpReqParam {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'firstname': firstName,
-      'lastname': lastName,
+      'firstName': firstName,
+      'lastName': lastName,
       'email': email,
       'password': password,
     };

@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 
 class DatePicker extends StatefulWidget {
   const DatePicker(
-    this.initialDate, {
-    super.key,
-    this.height = 100,
-    this.width = 72,
-    this.initialSelectedDate,
-    this.selectionColor,
-    this.selectedTextColor = Colors.white,
-    this.dateTextStyle = const TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.w600,
-      color: Colors.grey,
-    ),
-  });
+      this.initialDate, {
+        super.key,
+        this.height = 100,
+        this.width = 72,
+        this.initialSelectedDate,
+        this.selectionColor,
+        this.selectedTextColor = Colors.white,
+        this.onDateSelected,
+        this.dateTextStyle = const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Colors.grey,
+        ),
+      });
 
   final DateTime initialDate;
   final double height;
@@ -22,6 +23,7 @@ class DatePicker extends StatefulWidget {
   final DateTime? initialSelectedDate;
   final Color? selectionColor;
   final Color selectedTextColor;
+  final void Function(DateTime)? onDateSelected;
   final TextStyle dateTextStyle;
 
   @override
@@ -50,16 +52,22 @@ class _DatePickerState extends State<DatePicker> {
     return SizedBox(
       height: widget.height,
       child: ListView.builder(
+        reverse: true,
         scrollDirection: Axis.horizontal,
         itemCount: _dayCount,
         itemBuilder: (context, index) {
-          final date = widget.initialDate.add(Duration(days: index));
+          final reversedIndex = (_dayCount - 1) - index;
+          final date = widget.initialDate.add(Duration(days: reversedIndex));
           final isSelected = _isSameDay(_selectedDate, date);
+
           return GestureDetector(
-            onTap: () => setState(() => _selectedDate = date),
+            onTap: () {
+                setState(() => _selectedDate = date);
+                widget.onDateSelected?.call(date);
+              },
             child: Container(
               width: widget.width,
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(left: 10),
               decoration: BoxDecoration(
                 color: isSelected ? selectionColor : _unselectedBackground,
                 borderRadius: BorderRadius.circular(16),

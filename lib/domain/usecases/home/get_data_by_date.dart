@@ -9,8 +9,7 @@ class GetNutritionDataByDate extends Usecase<Either,dynamic>{
   GetNutritionDataByDate({required this.nutritionRepository});
   @override
   Future<Either> call({param}) {
-    // TODO: implement call
-    throw UnimplementedError();
+    return nutritionRepository.getNutritionDataByDate(param as DateTime);
   }
 
 }

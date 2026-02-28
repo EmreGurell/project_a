@@ -194,7 +194,7 @@ class _LoginFormState extends State<_LoginForm> {
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
-        onPressed: () {},
+        onPressed: () => context.push(RouteNames.forgotPasswordRoute),
         child: Text(
           l10n.forgot_password,
           style: Theme.of(context).textTheme.labelLarge!.copyWith(

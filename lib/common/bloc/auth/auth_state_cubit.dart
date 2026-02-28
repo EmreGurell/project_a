@@ -3,14 +3,16 @@ import 'package:project_a/common/bloc/auth/auth_state.dart';
 
 import '../../../data/models/auth/signin_req_params.dart';
 import '../../../data/models/auth/signup_req_params.dart';
+import '../../../domain/usecases/auth/logout.dart';
 import '../../../domain/usecases/auth/signin.dart';
 import '../../../domain/usecases/auth/signup.dart';
 
 class AuthStateCubit extends Cubit<AuthState> {
   final SignInUseCase signInUseCase;
   final SignUpUseCase signUpUseCase;
+  final LogoutUseCase logoutUseCase;
 
-  AuthStateCubit({required this.signInUseCase, required this.signUpUseCase})
+  AuthStateCubit( {required this.signInUseCase,required this.logoutUseCase, required this.signUpUseCase})
     : super(AuthInitial());
 
   Future<void> login(String email, String password) async {
@@ -51,5 +53,22 @@ class AuthStateCubit extends Cubit<AuthState> {
       (failureCode) => emit(AuthFailure(message: failureCode.toString())),
       (_) => emit(AuthRegistered()),
     );
+  }
+
+  Future<void> logout() async {
+    // Çıkış işlemi başlarken loading emit edebilirsin (opsiyonel)
+    emit(AuthLoading());
+
+    try {
+      // Local storage'dan token silme işlemini UseCase üzerinden yapıyoruz
+      final result = await logoutUseCase.call();
+
+      result.fold(
+            (failure) => emit(AuthFailure(message: failure.toString())),
+            (_) => emit(UnAuthenticated()), // State'i UnAuthenticated yapıyoruz
+      );
+    } catch (e) {
+      emit(AuthFailure(message: e.toString()));
+    }
   }
 }

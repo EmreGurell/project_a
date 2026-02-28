@@ -1,0 +1,138 @@
+{
+  "@@locale": "en",
+  "error_invalid_credentials": "User email or password is incorrect!",
+  "error_user_not_found": "No user found with this email.",
+  "error_unknown": "An unknown error occurred. Please try again.",
+  "error_validation_error": "Validation error occurred. Please try again.",
+  "error_unauthorized": "Unauthorized. Please try again.",
+  "error_token_expired": "Token expired. Please try again.",
+  "error_invalid_token": "Invalid token. Please try again.",
+  "error_not_found": "Not found. Please try again.",
+  "error_user_already_exists": "User already exists. Please try again.",
+  "error_invalid_response": "Unexpected response received from server. Please try again.",
+  "error_network_error": "Network error. Please check your connection and try again.",
+  
+  "@onboarding_title_1": {
+    "description": "----- ONBOARDING -----"
+  },
+  "onboarding_title_1": "Take a photo, let Cimbil calculate",
+  "onboarding_desc_1": "Take a picture of your meal. AI \"Cimbil\" recognizes it and estimates calories.",
+  "onboarding_title_2": "Track calories, stay in shape!",
+  "onboarding_desc_2": "Save calories for each meal and automatically calculate your daily totals.",
+  "onboarding_title_3": "Make smarter choices",
+  "onboarding_desc_3": "Stay balanced with daily alerts and summaries. See what to reduce based on your goal.",
+  "onboarding_skip": "Skip",
+  "onboarding_next": "Next",
+  "onboarding_lets_start": "Let's Start",
+  
+  "@welcome": {
+    "description": "----- LOGIN PAGE -----"
+  },
+  "welcome": "Welcome Back",
+  "good_to_see_you": "Good to see you",
+  "email": "Email",
+  "password": "Password",
+  "sign_in": "Sign In",
+  "sign_in_loading": "Signing in...",
+  "continue_with_google": "Sign in with Google",
+  "forgot_password": "Forgot password?",
+  "dont_have_account": "Don't have an account?",
+  "create_account": "Create account",
+  "validation_email_required": "Email is required.",
+  "validation_email_invalid": "Please enter a valid email address.",
+  "validation_password_required": "Password is required.",
+  "validation_password_min_length": "Password must be at least 6 characters.",
+  "validation_first_name_required": "First name is required.",
+  "validation_last_name_required": "Last name is required.",
+  "validation_first_name_invalid": "First name cannot contain numbers or special characters.",
+  "validation_last_name_invalid": "Last name cannot contain numbers or special characters.",
+  
+  "@register_title": {
+    "description": "----- REGISTER PAGE -----"
+  },
+  "register_title": "Let's Get Started",
+  "register_subtitle": "You can start by creating your account",
+  "register_first_name_label": "First Name",
+  "register_last_name_label": "Last Name",
+  "register_button": "Sign Up",
+  "register_have_account": "Already have an account? Sign In",
+
+  "@forgot_password_title": {
+    "description": "----- FORGOT PASSWORD PAGE -----"
+  },
+  "forgot_password_title": "Forgot Your Password?",
+  "forgot_password_subtitle": "Enter your email and we'll send you a code",
+  "forgot_password_send_code": "Send Code",
+  "forgot_password_sending": "Sending...",
+  "back_to_login": "Back to login",
+
+  "@verify_account_title": {
+    "description": "----- VERIFY ACCOUNT PAGE -----"
+  },
+  "verify_account_title": "Verify Code",
+  "verify_account_subtitle": "Enter the 6-digit code sent to your email",
+  "verify_account_code_label": "Verification Code",
+  "verify_account_sent_to": "Code sent to:",
+  "verify_account_button": "Verify",
+  "verify_account_loading": "Verifying...",
+  "verify_account_resend": "Resend code",
+  "verify_account_resend_loading": "Sending...",
+  "validation_code_required": "Verification code is required.",
+  "validation_code_length": "Code must be 6 digits.",
+
+  "@reset_password_title": {
+    "description": "----- RESET PASSWORD PAGE -----"
+  },
+  "reset_password_title": "Set New Password",
+  "reset_password_subtitle": "Choose a strong password",
+  "reset_password_new_label": "New Password",
+  "reset_password_confirm_label": "Confirm Password",
+  "reset_password_button": "Update Password",
+  "reset_password_loading": "Updating...",
+  "validation_passwords_not_match": "Passwords do not match.",
+
+  "@cimbil_title": {
+    "description": "----- CIMBIL AI PAGE -----"
+  },
+  "cimbil_title": "Cimbil",
+  "cimbil_greeting": "Hello! I'm Cimbil 👋",
+  "cimbil_description": "Ask me anything about nutrition.\nCalculate calories, get recipes, ask for advice!",
+  "cimbil_input_hint": "Ask Cimbil something...",
+  "cimbil_suggestion_calorie": "🍕 How many calories?",
+  "cimbil_suggestion_recipe": "🥗 Suggest a healthy recipe",
+  "cimbil_suggestion_protein": "💪 Protein sources",
+  "cimbil_query_calorie": "How many calories does this food have?",
+  "cimbil_query_recipe": "Can you suggest a healthy recipe?",
+  "cimbil_query_protein": "What are the best protein sources?",
+  "cimbil_not_active": "This feature is not active yet, I'll be here very soon! 🤖",
+
+  "@nutrition_title_barcode": {
+    "description": "----- NUTRITION RESULT PAGE -----"
+  },
+  "nutrition_title_barcode": "Product Info",
+  "nutrition_title_food": "Food Analysis",
+  "nutrition_kcal_suffix": "kcal",
+  "nutrition_portion_single": "1 serving",
+  "nutrition_portion_estimated": "Estimated serving",
+  "nutrition_add_to_log": "Add to Log",
+  "nutrition_fat": "Fat",
+  "nutrition_protein": "Protein",
+  "nutrition_carb": "Carbohydrate",
+  "nutrition_fiber": "Fiber",
+
+  "@scanner_barcode_scanning": {
+    "description": "----- BARCODE SCANNER PAGE -----"
+  },
+  "scanner_barcode_scanning": "Scan barcode...",
+  "scanner_barcode_align": "Align the barcode within the frame",
+  "scanner_barcode_found": "Barcode scanned!",
+  "scanner_barcode_rescan": "Rescan",
+  "scanner_querying": "Querying...",
+  "scanner_querying_detail": "Fetching product info",
+  "scanner_food_mode": "Food Mode",
+  "scanner_food_align": "Align the plate here",
+  "scanner_food_instruction": "For more accurate results, place your thumb next to the plate and take the photo 👍",
+  "scanner_tab_barcode": "Barcode",
+  "scanner_tab_food": "Food",
+  "scanner_tab_ask_ai": "Ask Cimbil"
+}

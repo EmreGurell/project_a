@@ -7,3 +7,5 @@ class AppEntryOnboarding extends AppEntryState {}
 class AppEntryUnAuthenticated extends AppEntryState {}
 
 class AppEntryAuthenticated extends AppEntryState {}
+
+class AppEntryProfileSetup extends AppEntryState {}

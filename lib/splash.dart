@@ -33,6 +33,10 @@ class _SplashPageState extends State<SplashPage> {
         if (state is AppEntryAuthenticated) {
           context.go(RouteNames.homeRoute);
         }
+
+        if (state is AppEntryProfileSetup) {
+          context.go(RouteNames.formRoute);
+        }
       },
       child: Scaffold(body: Center(child: CircularProgressIndicator())),
     );

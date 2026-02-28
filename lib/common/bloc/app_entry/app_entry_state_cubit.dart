@@ -29,6 +29,9 @@ class AppEntryCubit extends Cubit<AppEntryState> {
       case AppEntryStatus.authenticated:
         emit(AppEntryAuthenticated());
         break;
+      case AppEntryStatus.profileSetup:
+        emit(AppEntryProfileSetup());
+        break;
     }
   }
   Future<void> completeOnboarding() async {

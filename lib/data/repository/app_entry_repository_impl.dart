@@ -29,6 +29,10 @@ class AppEntryRepositoryImpl implements AppEntryRepository {
     final isAuthenticated = await authRepository.isAuthenticated();
 
     if (isAuthenticated) {
+      final isFormCompleted = await localService.isUserFormCompleted();
+      if (!isFormCompleted) {
+        return AppEntryStatus.profileSetup;
+      }
       return AppEntryStatus.authenticated;
     }
 

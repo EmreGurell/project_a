@@ -7,10 +7,12 @@ import 'summary_card/macro_progress_section.dart';
 
 class CalorieSummaryCard extends StatelessWidget {
   final NutritionEntity? nutrition;
+  final bool isLoading;
 
   const CalorieSummaryCard({
     super.key,
     this.nutrition,
+    this.isLoading = false,
   });
 
   @override
@@ -38,25 +40,32 @@ class CalorieSummaryCard extends StatelessWidget {
           color: ProjectColors.secondaryCardBlue.withValues(alpha: 0.5),
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: ProjectSizes.spaceBtwItems / 2,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            MacroProgressSection(
-              carbProgress: carbProgress.clamp(0.0, 1.0),
-              proteinProgress: proteinProgress.clamp(0.0, 1.0),
-              fatProgress: fatProgress.clamp(0.0, 1.0),
+      child: isLoading
+          ? const SizedBox(
+              height: 100,
+              child: Center(
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: ProjectSizes.spaceBtwItems / 2,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MacroProgressSection(
+                    carbProgress: carbProgress.clamp(0.0, 1.0),
+                    proteinProgress: proteinProgress.clamp(0.0, 1.0),
+                    fatProgress: fatProgress.clamp(0.0, 1.0),
+                  ),
+                  CalorieCircleSection(
+                    calories: nutrition?.totalCalories.toInt() ?? 0,
+                    progress: calorieProgress.clamp(0.0, 1.0),
+                  ),
+                ],
+              ),
             ),
-            CalorieCircleSection(
-              calories: nutrition?.totalCalories.toInt() ?? 0,
-              progress: calorieProgress.clamp(0.0, 1.0),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

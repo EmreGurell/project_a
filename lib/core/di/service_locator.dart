@@ -10,13 +10,23 @@ import 'package:project_a/data/source/user/user_api_service.dart';
 import 'package:project_a/domain/repositories/app_entry_repository.dart';
 import 'package:project_a/domain/repositories/auth_repository.dart';
 import 'package:project_a/domain/repositories/user/user_repository.dart';
+import 'package:project_a/domain/usecases/auth/forgot_password.dart';
 import 'package:project_a/domain/usecases/auth/is_authenticated.dart';
+import 'package:project_a/domain/usecases/auth/logout.dart';
+import 'package:project_a/domain/usecases/auth/resend_verification_code.dart';
+import 'package:project_a/domain/usecases/auth/reset_password.dart';
 import 'package:project_a/domain/usecases/auth/signin.dart';
 import 'package:project_a/domain/usecases/auth/signup.dart';
+import 'package:project_a/domain/usecases/auth/verify_account.dart';
 import 'package:project_a/domain/usecases/home/get_data_by_date.dart';
 import 'package:project_a/domain/usecases/onboarding/complete_onboarding.dart';
 import 'package:project_a/domain/usecases/user/get_current_user.dart';
+import 'package:project_a/data/source/ai/ai_api_service.dart';
+import 'package:project_a/presentation/bloc/cimbil/cimbil_bloc.dart';
+import 'package:project_a/presentation/bloc/form/profile_setup_bloc.dart';
 import 'package:project_a/presentation/bloc/home/home_bloc.dart';
+import 'package:project_a/presentation/bloc/nutrition/nutrition_result_bloc.dart';
+import 'package:project_a/presentation/bloc/profile/profile_bloc.dart';
 import 'package:project_a/utils/local_storage/storage_service.dart';
 
 import '../../common/bloc/app_entry/app_entry_state_cubit.dart';
@@ -44,6 +54,7 @@ Future<void> setupServiceLocator() async {
     () => AuthLocalServiceImpl(storageService: sl()),
   );
   sl.registerLazySingleton<NutritionApiService>(() => NutritionApiServiceImpl(dioClient: sl()));
+  sl.registerLazySingleton<AiApiService>(() => AiApiServiceImpl());
   /// Repositories
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(apiService: sl(), localService: sl()),
@@ -61,13 +72,22 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<CompleteOnboardingUseCase>(
     () => CompleteOnboardingUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(() => LogoutUseCase(authRepository: sl()));
+  sl.registerLazySingleton(() => ForgotPasswordUseCase(authRepository: sl()));
+  sl.registerLazySingleton(() => ResetPasswordUseCase(authRepository: sl()));
+  sl.registerLazySingleton(() => VerifyAccountUseCase(authRepository: sl()));
+  sl.registerLazySingleton(() => ResendVerificationCodeUseCase(authRepository: sl()));
   sl.registerLazySingleton(()=> GetCurrentUserUseCase(userRepository: sl()));
   sl.registerLazySingleton(()=> GetNutritionDataByDate(nutritionRepository: sl()));
   /// Cubit
   sl.registerFactory<AppEntryCubit>(() => AppEntryCubit(sl(), sl()));
   sl.registerFactory<ButtonStateCubit>(() => ButtonStateCubit());
   sl.registerFactory<AuthStateCubit>(
-    () => AuthStateCubit(signInUseCase: sl(), signUpUseCase: sl()),
+    () => AuthStateCubit(signInUseCase: sl(), signUpUseCase: sl(),logoutUseCase: sl()),
   );
+  sl.registerFactory<ProfileSetupBloc>(() => ProfileSetupBloc(localService: sl()));
+  sl.registerFactory<CimbilBloc>(() => CimbilBloc(aiService: sl(), localService: sl()));
+  sl.registerFactory<NutritionResultBloc>(() => NutritionResultBloc(aiService: sl()));
   sl.registerFactory<HomeBloc>(()=>HomeBloc(sl(),sl()));
+  sl.registerFactory<ProfileBloc>(()=>ProfileBloc(getCurrentUserUseCase: sl()));
 }

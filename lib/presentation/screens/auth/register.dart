@@ -31,26 +31,12 @@ class RegisterPage extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       body: BlocProvider(
         create: (context) => sl<ButtonStateCubit>(),
-        child: BlocListener<ButtonStateCubit, ButtonState>(
-          listener: (context, state) {
-            if (state is ButtonSuccessState) {
-              context.go(RouteNames.homeRoute);
-            }
-            if (state is ButtonFailureState) {
-              final mappedMessage = ErrorMapper.getErrorMessage(
-                context,
-                state.errorMessage,
-              );
-              AppSnackbar.showError(context, message: mappedMessage);
-            }
-          },
-          child: Stack(
-            children: const [
-              _RegisterBackground(),
-              _RegisterCard(),
-              _RegisterMascot(),
-            ],
-          ),
+        child: Stack(
+          children: const [
+            _RegisterBackground(),
+            _RegisterCard(),
+            _RegisterMascot(),
+          ],
         ),
       ),
     );
@@ -163,8 +149,27 @@ class _RegisterFormState extends State<_RegisterForm> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Form(
-      key: _formKey,
+    return BlocListener<ButtonStateCubit, ButtonState>(
+      listener: (context, state) {
+        if (state is ButtonSuccessState) {
+          context.go(
+            RouteNames.verifyAccountRoute,
+            extra: {
+              'email': emailController.text.trim(),
+              'isForReset': false,
+            },
+          );
+        }
+        if (state is ButtonFailureState) {
+          final mappedMessage = ErrorMapper.getErrorMessage(
+            context,
+            state.errorMessage,
+          );
+          AppSnackbar.showError(context, message: mappedMessage);
+        }
+      },
+      child: Form(
+        key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -269,6 +274,7 @@ class _RegisterFormState extends State<_RegisterForm> {
           const SocialLogin(),
         ],
       ),
+    ),
     );
   }
 }

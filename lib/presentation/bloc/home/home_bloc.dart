@@ -1,6 +1,4 @@
-import 'package:dartz/dartz.dart'; // Right/Left için gerekli
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_a/domain/entities/nutrition/nutrition_entity.dart';
 import 'package:project_a/domain/usecases/home/get_data_by_date.dart';
 import '../../../domain/usecases/user/get_current_user.dart';
 import 'home_event.dart';
@@ -10,68 +8,72 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetCurrentUserUseCase getCurrentUser;
   final GetNutritionDataByDate getNutritionDataByDate;
 
-  HomeBloc(this.getCurrentUser, this.getNutritionDataByDate) : super(HomeInitial()) {
+  HomeBloc(this.getCurrentUser, this.getNutritionDataByDate)
+      : super(HomeInitial()) {
     on<LoadCurrentUser>(_onLoadCurrentUser);
+    on<ChangeDate>(_onChangeDate);
   }
 
   Future<void> _onLoadCurrentUser(
-      LoadCurrentUser event,
-      Emitter<HomeState> emit,
-      ) async {
+    LoadCurrentUser event,
+    Emitter<HomeState> emit,
+  ) async {
     emit(HomeLoading());
+
     final now = DateTime.now();
-    final List<DateTime> dateRange = List.generate(
+    final dateRange = List.generate(
       14,
-          (index) => now.subtract(Duration(days: 13 - index)),
+      (i) => now.subtract(Duration(days: 13 - i)),
     );
 
-    // =========================================================================
-    // GERÇEK API ÇAĞRISI (Endpoint hazır olduğunda burayı aç)
-    /*
-    final results = await Future.wait([
-      getCurrentUser(),
-      getNutritionDataByDate(param: now),
-    ]);
-    */
-    // =========================================================================
+    final userResult = await getCurrentUser();
+    await userResult.fold(
+      (error) async => emit(HomeError(error)),
+      (user) async {
+        final loaded = HomeLoaded(
+          user: user,
+          dateRange: dateRange,
+          selectedDate: now,
+          isNutritionLoading: true,
+        );
+        emit(loaded);
 
-    // =========================================================================
-
-    final results = await Future.wait([
-      getCurrentUser(),
-      Future.value(Right<String, NutritionEntity>(
-        NutritionEntity(
-          id: 0,
-          totalCalories: 1450,
-          protein: 85,
-          carbs: 120,
-          fat: 45,
-          date: now,
-        ),
-      )),
-    ]);
-    // =========================================================================
-
-    final userResult = results[0];
-    final nutritionResult = results[1];
-
-    userResult.fold(
-          (userError) => emit(HomeError(userError)),
-          (user) {
-        // nutritionResult'ı dinamik casting yerine tip güvenli şekilde fold ediyoruz
+        final nutritionResult =
+            await getNutritionDataByDate(param: now);
         nutritionResult.fold(
-              (nutritionError) => emit(HomeError(nutritionError)),
-              (nutritionData) {
-            // nutritionData burada otomatik olarak NutritionEntity tipindedir
-            emit(HomeLoaded(
-              user: user,
-              nutrition: nutritionData as NutritionEntity,
-              dateRange: dateRange,
-              selectedDate: now,
-            ));
-          },
+          (error) => emit(loaded.copyWith(isNutritionLoading: false)),
+          (nutrition) => emit(loaded.copyWith(
+            nutrition: nutrition,
+            isNutritionLoading: false,
+          )),
         );
       },
+    );
+  }
+
+  Future<void> _onChangeDate(
+    ChangeDate event,
+    Emitter<HomeState> emit,
+  ) async {
+    final current = state;
+    if (current is! HomeLoaded) return;
+
+    emit(current.copyWith(
+      selectedDate: event.date,
+      isNutritionLoading: true,
+    ));
+
+    final result = await getNutritionDataByDate(param: event.date);
+    result.fold(
+      (error) => emit(current.copyWith(
+        selectedDate: event.date,
+        isNutritionLoading: false,
+      )),
+      (nutrition) => emit(current.copyWith(
+        selectedDate: event.date,
+        nutrition: nutrition,
+        isNutritionLoading: false,
+      )),
     );
   }
 }

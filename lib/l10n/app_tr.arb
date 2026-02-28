@@ -1,0 +1,138 @@
+{
+  "@@locale": "tr",
+  "error_invalid_credentials": "Kullanıcı adı veya şifreyi hatalı girdiniz.",
+  "error_user_not_found": "Bu e-posta adresiyle kayıtlı bir kullanıcı bulunamadı.",
+  "error_unknown": "Bilinmeyen bir hata oluştu. Lütfen tekrar deneyin.",
+  "error_validation_error": "Doğrulama hatası oluştu. Lütfen tekrar deneyin.",
+  "error_unauthorized": "Yetkisiz işlem. Lütfen tekrar deneyin.",
+  "error_token_expired": "Oturum süresi doldu. Lütfen tekrar giriş yapın.",
+  "error_invalid_token": "Geçersiz oturum bilgisi. Lütfen tekrar giriş yapın.",
+  "error_not_found": "Aradığınız kayıt bulunamadı.",
+  "error_user_already_exists": "Bu kullanıcı zaten mevcut.",
+  "error_invalid_response": "Sunucudan beklenmeyen bir yanıt alındı. Lütfen tekrar deneyin.",
+  "error_network_error": "Ağ hatası oluştu. Bağlantınızı kontrol edip tekrar deneyin.",
+  
+  "@onboarding_title_1": {
+    "description": "----- ONBOARDING -----"
+  },
+  "onboarding_title_1": "Fotoğraf çek, Cımbıl hesaplasın",
+  "onboarding_desc_1": "Yemeğini çek. Yapay zeka \"Cımbıl\" tanır ve yaklaşık kalori hesabını çıkarır.",
+  "onboarding_title_2": "Kalori takibi yap, Göbüş Gitsin!",
+  "onboarding_desc_2": "Her öğünün kalorisini kaydet. Günlük toplamlarını otomatik hesapla.",
+  "onboarding_title_3": "Daha bilinçli seçimler yap",
+  "onboarding_desc_3": "Gün içi uyarılar ve özetlerle dengede kal. Hedefine göre neyi azaltman gerektiğini gör.",
+  "onboarding_skip": "Geç",
+  "onboarding_next": "İleri",
+  "onboarding_lets_start": "Başlayalım",
+
+  "@welcome": {
+    "description": "----- GIRIS SAYFASI -----"
+  },
+  "welcome": "Tekrar Hoş Geldin",
+  "good_to_see_you": "Seni görmek güzel",
+  "email": "E-posta",
+  "password": "Şifre",
+  "sign_in": "Giriş Yap",
+  "sign_in_loading": "Giriş yapılıyor...",
+  "continue_with_google": "Google ile giriş yap",
+  "forgot_password": "Şifreni mi unuttun?",
+  "dont_have_account": "Hesabın yok mu?",
+  "create_account": "Hesap oluştur",
+  "validation_email_required": "E-posta zorunludur.",
+  "validation_email_invalid": "Lütfen geçerli bir e-posta adresi girin.",
+  "validation_password_required": "Şifre zorunludur.",
+  "validation_password_min_length": "Şifre en az 6 karakter olmalıdır.",
+  "validation_first_name_required": "İsim zorunludur.",
+  "validation_last_name_required": "Soyisim zorunludur.",
+  "validation_first_name_invalid": "İsim alanında sayı veya özel karakter kullanılamaz.",
+  "validation_last_name_invalid": "Soyisim alanında sayı veya özel karakter kullanılamaz.",
+
+  "@register_title": {
+    "description": "----- KAYIT SAYFASI -----"
+  },
+  "register_title": "Hadi Başlayalım",
+  "register_subtitle": "Hesap oluşturarak başlayabilirsin",
+  "register_first_name_label": "İsim",
+  "register_last_name_label": "Soyisim",
+  "register_button": "Kayıt Ol",
+  "register_have_account": "Hesabın var mı? Giriş Yap",
+
+  "@forgot_password_title": {
+    "description": "----- SIFREMI UNUTTUM SAYFASI -----"
+  },
+  "forgot_password_title": "Şifreni Mi Unuttun?",
+  "forgot_password_subtitle": "E-posta adresini gir, sana kod gönderelim",
+  "forgot_password_send_code": "Kod Gönder",
+  "forgot_password_sending": "Gönderiliyor...",
+  "back_to_login": "Giriş sayfasına dön",
+
+  "@verify_account_title": {
+    "description": "----- HESAP DOGRULAMA SAYFASI -----"
+  },
+  "verify_account_title": "Kodu Doğrula",
+  "verify_account_subtitle": "E-posta adresine gönderilen 6 haneli kodu gir",
+  "verify_account_code_label": "Doğrulama Kodu",
+  "verify_account_sent_to": "Kod şu adrese gönderildi:",
+  "verify_account_button": "Doğrula",
+  "verify_account_loading": "Doğrulanıyor...",
+  "verify_account_resend": "Kodu tekrar gönder",
+  "verify_account_resend_loading": "Gönderiliyor...",
+  "validation_code_required": "Doğrulama kodu zorunludur.",
+  "validation_code_length": "Kod 6 haneli olmalıdır.",
+
+  "@reset_password_title": {
+    "description": "----- SIFRE SIFIRLAMA SAYFASI -----"
+  },
+  "reset_password_title": "Yeni Şifre Belirle",
+  "reset_password_subtitle": "Güçlü bir şifre seç",
+  "reset_password_new_label": "Yeni Şifre",
+  "reset_password_confirm_label": "Şifre Tekrarı",
+  "reset_password_button": "Şifreyi Güncelle",
+  "reset_password_loading": "Güncelleniyor...",
+  "validation_passwords_not_match": "Şifreler eşleşmiyor.",
+
+  "@cimbil_title": {
+    "description": "----- CIMBIL AI SAYFASI -----"
+  },
+  "cimbil_title": "Cımbıl",
+  "cimbil_greeting": "Merhaba! Ben Cımbıl 👋",
+  "cimbil_description": "Beslenme hakkında her şeyi sorabilirsin.\nKalori hesapla, tarif al, öneri iste!",
+  "cimbil_input_hint": "Cımbıl'a bir şey sor...",
+  "cimbil_suggestion_calorie": "🍕 Bu yemeğin kalorisi?",
+  "cimbil_suggestion_recipe": "🥗 Sağlıklı tarif öner",
+  "cimbil_suggestion_protein": "💪 Protein kaynakları",
+  "cimbil_query_calorie": "Bu yemeğin kalorisi ne kadar?",
+  "cimbil_query_recipe": "Sağlıklı bir tarif önerir misin?",
+  "cimbil_query_protein": "En iyi protein kaynakları neler?",
+  "cimbil_not_active": "Henüz bu özellik aktif değil, çok yakında burada olacağım! 🤖",
+
+  "@nutrition_title_barcode": {
+    "description": "----- BESIN DEGERLERI SAYFASI -----"
+  },
+  "nutrition_title_barcode": "Ürün Bilgisi",
+  "nutrition_title_food": "Yemek Analizi",
+  "nutrition_kcal_suffix": "kcal",
+  "nutrition_portion_single": "1 porsiyon",
+  "nutrition_portion_estimated": "Tahmini porsiyon",
+  "nutrition_add_to_log": "Günlüğe Ekle",
+  "nutrition_fat": "Yağ",
+  "nutrition_protein": "Protein",
+  "nutrition_carb": "Karbonhidrat",
+  "nutrition_fiber": "Lif",
+
+  "@scanner_barcode_scanning": {
+    "description": "----- BARKOD TARAYICI SAYFASI -----"
+  },
+  "scanner_barcode_scanning": "Barkod okutun...",
+  "scanner_barcode_align": "Barkodu çerçeve içine hizalayın",
+  "scanner_barcode_found": "Barkod okundu!",
+  "scanner_barcode_rescan": "Tekrar",
+  "scanner_querying": "Sorgulanıyor...",
+  "scanner_querying_detail": "Ürün bilgileri getiriliyor",
+  "scanner_food_mode": "Yemek Modu",
+  "scanner_food_align": "Tabağı buraya hizalayın",
+  "scanner_food_instruction": "Daha doğru sonuç için baş parmağınızı tabağın yanına koyun ve fotoğrafı çekin 👍",
+  "scanner_tab_barcode": "Barkod",
+  "scanner_tab_food": "Yemek",
+  "scanner_tab_ask_ai": "Cımbıla Sor"
+}

@@ -1,7 +1,7 @@
 class ResendVerificationReqParam {
-  final String email;
+  final String userId;
 
-  ResendVerificationReqParam({required this.email});
+  ResendVerificationReqParam({required this.userId});
 
-  Map<String, dynamic> toMap() => {'email': email};
+  Map<String, dynamic> toMap() => {'userId': userId};
 }

@@ -27,6 +27,7 @@ class ErrorMapper {
         return l10n.error_invalid_token;
 
       case "USER_ALREADY_EXISTS":
+      case "EMAIL_EXISTS":
         return l10n.error_user_already_exists;
 
       case "INVALID_RESPONSE":
@@ -34,6 +35,9 @@ class ErrorMapper {
 
       case "NETWORK_ERROR":
         return l10n.error_network_error;
+
+      case "TIMEOUT":
+        return l10n.error_timeout;
 
       default:
         return "${l10n.error_unknown} $serverErrorCode";

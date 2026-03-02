@@ -1,5 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:project_a/common/bloc/auth/auth_state.dart';
+import 'package:project_a/utils/local_storage/storage_service.dart';
 
 import '../../../data/models/auth/signin_req_params.dart';
 import '../../../data/models/auth/signup_req_params.dart';
@@ -11,9 +12,14 @@ class AuthStateCubit extends Cubit<AuthState> {
   final SignInUseCase signInUseCase;
   final SignUpUseCase signUpUseCase;
   final LogoutUseCase logoutUseCase;
+  final LocalStorageService localStorageService;
 
-  AuthStateCubit( {required this.signInUseCase,required this.logoutUseCase, required this.signUpUseCase})
-    : super(AuthInitial());
+  AuthStateCubit({
+    required this.signInUseCase,
+    required this.logoutUseCase,
+    required this.signUpUseCase,
+    required this.localStorageService,
+  }) : super(AuthInitial());
 
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
@@ -23,9 +29,15 @@ class AuthStateCubit extends Cubit<AuthState> {
         param: SignInReqParam(email: email, password: password),
       );
 
-      result.fold(
-        (failureCode) => emit(AuthFailure(message: failureCode.toString())),
-        (token) => emit(AuthSuccess(token: token.toString())),
+      await result.fold(
+        (failureCode) async => emit(AuthFailure(message: failureCode.toString())),
+        (entity) async {
+          if (entity.hasProfile) {
+            emit(AuthSuccess(token: entity.token));
+          } else {
+            emit(AuthSuccessNeedsForm());
+          }
+        },
       );
     } catch (e) {
       emit(AuthFailure(message: e.toString()));
@@ -40,32 +52,37 @@ class AuthStateCubit extends Cubit<AuthState> {
   ) async {
     emit(AuthLoading());
 
-    final result = await signUpUseCase.call(
-      param: SignUpReqParam(
-        email: email,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-      ),
-    );
+    try {
+      final result = await signUpUseCase.call(
+        param: SignUpReqParam(
+          email: email,
+          password: password,
+          firstName: firstName,
+          lastName: lastName,
+        ),
+      );
 
-    result.fold(
-      (failureCode) => emit(AuthFailure(message: failureCode.toString())),
-      (_) => emit(AuthRegistered()),
-    );
+      result.fold(
+        (failureCode) => emit(AuthFailure(message: failureCode.toString())),
+        (userId) => emit(AuthRegistered(userId: userId, email: email)),
+      );
+    } catch (e) {
+      emit(AuthFailure(message: e.toString()));
+    }
   }
 
   Future<void> logout() async {
-    // Çıkış işlemi başlarken loading emit edebilirsin (opsiyonel)
     emit(AuthLoading());
 
     try {
-      // Local storage'dan token silme işlemini UseCase üzerinden yapıyoruz
       final result = await logoutUseCase.call();
 
-      result.fold(
-            (failure) => emit(AuthFailure(message: failure.toString())),
-            (_) => emit(UnAuthenticated()), // State'i UnAuthenticated yapıyoruz
+      await result.fold(
+        (failure) async => emit(AuthFailure(message: failure.toString())),
+        (_) async {
+          await HydratedBloc.storage.clear(); // Tüm cache'i temizle
+          emit(UnAuthenticated());
+        },
       );
     } catch (e) {
       emit(AuthFailure(message: e.toString()));

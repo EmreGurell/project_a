@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_a/core/di/service_locator.dart';
+import 'package:project_a/main.dart';
 import 'package:project_a/data/models/nutrition/ai_nutrition_result_model.dart';
 import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/presentation/bloc/nutrition/nutrition_result_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:project_a/presentation/widgets/nutrition/nutrition_detail_card.d
 import 'package:project_a/presentation/widgets/nutrition/nutrition_macro.dart';
 import 'package:project_a/presentation/widgets/nutrition/nutrition_macro_circle.dart';
 import 'package:project_a/presentation/widgets/nutrition/nutrition_photo_section.dart';
+import 'package:project_a/shared/widgets/snackbar/custom_snackbar.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 
@@ -58,87 +60,127 @@ class _NutritionResultView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      backgroundColor: ProjectColors.white,
-      appBar: AppBar(
+    return BlocListener<NutritionResultBloc, NutritionResultState>(
+      listener: (context, state) {
+        if (state is NutritionLogSuccess) {
+          nutritionLoggedNotifier.value++;
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        } else if (state is NutritionLogError) {
+          AppSnackbar.showError(context, message: state.message);
+        }
+      },
+      child: Scaffold(
         backgroundColor: ProjectColors.white,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back_ios_new, size: ProjectSizes.iconM),
-        ),
-        centerTitle: true,
-        title: Text(
-          mode == 'barcode' ? l10n.nutrition_title_barcode : l10n.nutrition_title_food,
-          style: textTheme.titleLarge?.copyWith(
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
+        appBar: AppBar(
+          backgroundColor: ProjectColors.white,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.arrow_back_ios_new, size: ProjectSizes.iconM),
           ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.add_circle_outline,
-              color: ProjectColors.orange,
-              size: ProjectSizes.iconL,
+          centerTitle: true,
+          title: Text(
+            mode == 'barcode' ? l10n.nutrition_title_barcode : l10n.nutrition_title_food,
+            style: textTheme.titleLarge?.copyWith(
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
             ),
           ),
-        ],
-      ),
-      body: BlocBuilder<NutritionResultBloc, NutritionResultState>(
-        builder: (context, state) {
-          if (state is NutritionResultLoading || state is NutritionResultInitial) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state is NutritionResultError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(ProjectSizes.pagePadding),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                    const SizedBox(height: ProjectSizes.paddingMd),
-                    Text(state.message, textAlign: TextAlign.center),
-                    const SizedBox(height: ProjectSizes.paddingMd),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Geri dön'),
-                    ),
-                  ],
-                ),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.add_circle_outline,
+                color: ProjectColors.orange,
+                size: ProjectSizes.iconL,
               ),
-            );
-          }
+            ),
+          ],
+        ),
+        body: BlocBuilder<NutritionResultBloc, NutritionResultState>(
+          builder: (context, state) {
+            if (state is NutritionResultLoading || state is NutritionResultInitial) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final result = (state as NutritionResultLoaded).result;
-          return _NutritionContent(
-            result: result,
-            photoPath: photoPath,
-            barcode: barcode,
-            mode: mode,
-          );
-        },
+            if (state is NutritionResultError) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(ProjectSizes.pagePadding),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                      const SizedBox(height: ProjectSizes.paddingMd),
+                      Text(state.message, textAlign: TextAlign.center),
+                      const SizedBox(height: ProjectSizes.paddingMd),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Geri dön'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            final AiNutritionResultModel result;
+            final bool isLogging;
+
+            if (state is NutritionLogLoading) {
+              result = state.result;
+              isLogging = true;
+            } else if (state is NutritionLogError) {
+              result = state.result;
+              isLogging = false;
+            } else {
+              result = (state as NutritionResultLoaded).result;
+              isLogging = false;
+            }
+
+            return _NutritionContent(
+              result: result,
+              photoPath: photoPath,
+              barcode: barcode,
+              mode: mode,
+              isLogging: isLogging,
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class _NutritionContent extends StatelessWidget {
+class _NutritionContent extends StatefulWidget {
   const _NutritionContent({
     required this.result,
     required this.photoPath,
     required this.barcode,
     required this.mode,
+    required this.isLogging,
   });
 
   final AiNutritionResultModel result;
   final String? photoPath;
   final String? barcode;
   final String mode;
+  final bool isLogging;
+
+  @override
+  State<_NutritionContent> createState() => _NutritionContentState();
+}
+
+class _NutritionContentState extends State<_NutritionContent> {
+  String _selectedMealType = 'breakfast';
+
+  static const _mealTypes = [
+    ('breakfast', 'Kahvaltı'),
+    ('lunch', 'Öğle'),
+    ('snacks', 'Atıştırmalık'),
+    ('dinner', 'Akşam'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -148,26 +190,26 @@ class _NutritionContent extends StatelessWidget {
     final macros = [
       NutritionMacro(
         name: l10n.nutrition_fat,
-        grams: result.fat.round(),
+        grams: widget.result.fat.round(),
         dailyTarget: 65,
         color: const Color(0xFFF9D56E),
       ),
       NutritionMacro(
         name: l10n.nutrition_protein,
-        grams: result.protein.round(),
+        grams: widget.result.protein.round(),
         dailyTarget: 50,
         color: const Color(0xFFFA8072),
       ),
       NutritionMacro(
         name: l10n.nutrition_carb,
-        grams: result.carbs.round(),
+        grams: widget.result.carbs.round(),
         dailyTarget: 130,
         color: const Color(0xFF87CEEB),
       ),
-      if (result.fiber != null)
+      if (widget.result.fiber != null)
         NutritionMacro(
           name: l10n.nutrition_fiber,
-          grams: result.fiber!.round(),
+          grams: widget.result.fiber!.round(),
           dailyTarget: 25,
           color: const Color(0xFFB5EAD7),
         ),
@@ -178,17 +220,17 @@ class _NutritionContent extends StatelessWidget {
         children: [
           const SizedBox(height: ProjectSizes.paddingSm),
 
-          if (photoPath != null) NutritionPhotoSection(photoPath: photoPath!),
+          if (widget.photoPath != null) NutritionPhotoSection(photoPath: widget.photoPath!),
 
-          if (barcode != null) ...[
+          if (widget.barcode != null) ...[
             const SizedBox(height: ProjectSizes.paddingSm + 4),
-            _BarcodeChip(barcode: barcode!),
+            _BarcodeChip(barcode: widget.barcode!),
           ],
 
-          if (result.name.isNotEmpty) ...[
+          if (widget.result.name.isNotEmpty) ...[
             const SizedBox(height: ProjectSizes.paddingMd),
             Text(
-              result.name,
+              widget.result.name,
               style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
@@ -197,7 +239,7 @@ class _NutritionContent extends StatelessWidget {
           const SizedBox(height: ProjectSizes.paddingLg),
 
           Text(
-            '${result.calories.round()} ${l10n.nutrition_kcal_suffix}',
+            '${widget.result.calories.round()} ${l10n.nutrition_kcal_suffix}',
             style: textTheme.bodyLarge?.copyWith(
               fontSize: 36,
               fontWeight: FontWeight.w800,
@@ -207,16 +249,16 @@ class _NutritionContent extends StatelessWidget {
 
           const SizedBox(height: ProjectSizes.paddingSm),
           Text(
-            mode == 'barcode'
+            widget.mode == 'barcode'
                 ? l10n.nutrition_portion_single
                 : l10n.nutrition_portion_estimated,
             style: textTheme.bodySmall?.copyWith(color: ProjectColors.textGray),
           ),
 
-          if (result.portionSize != null) ...[
+          if (widget.result.portionSize != null) ...[
             const SizedBox(height: 4),
             Text(
-              result.portionSize!,
+              widget.result.portionSize!,
               style: textTheme.bodySmall?.copyWith(color: ProjectColors.textGray),
             ),
           ],
@@ -237,27 +279,80 @@ class _NutritionContent extends StatelessWidget {
 
           const SizedBox(height: ProjectSizes.paddingLg),
 
+          // Meal type selector
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: ProjectSizes.pagePadding),
+            child: Wrap(
+              spacing: 8,
+              children: _mealTypes.map((entry) {
+                final (key, label) = entry;
+                final isSelected = _selectedMealType == key;
+                return ChoiceChip(
+                  label: Text(label),
+                  selected: isSelected,
+                  onSelected: widget.isLogging
+                      ? null
+                      : (_) => setState(() => _selectedMealType = key),
+                  selectedColor: ProjectColors.orange,
+                  backgroundColor: ProjectColors.cardGray,
+                  labelStyle: textTheme.bodySmall?.copyWith(
+                    color: isSelected ? Colors.white : ProjectColors.textGray,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  side: BorderSide.none,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  showCheckmark: false,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: ProjectSizes.paddingSm,
+                    vertical: 4,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+
+          const SizedBox(height: ProjectSizes.paddingMd),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: ProjectSizes.pagePadding),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                },
+                onPressed: widget.isLogging
+                    ? null
+                    : () {
+                        context.read<NutritionResultBloc>().add(
+                              LogNutrition(
+                                result: widget.result,
+                                mealType: _selectedMealType,
+                              ),
+                            );
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ProjectColors.orange,
                   foregroundColor: Colors.white,
+                  disabledBackgroundColor: ProjectColors.orange.withAlpha(153),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(ProjectSizes.borderRadiusLg),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: ProjectSizes.paddingMd),
                   elevation: 0,
                 ),
-                child: Text(
-                  l10n.nutrition_add_to_log,
-                  style: textTheme.labelLarge?.copyWith(color: Colors.white),
-                ),
+                child: widget.isLogging
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        l10n.nutrition_add_to_log,
+                        style: textTheme.labelLarge?.copyWith(color: Colors.white),
+                      ),
               ),
             ),
           ),

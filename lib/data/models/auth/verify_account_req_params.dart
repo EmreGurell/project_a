@@ -1,8 +1,8 @@
 class VerifyAccountReqParam {
-  final String email;
+  final String userId;
   final String code;
 
-  VerifyAccountReqParam({required this.email, required this.code});
+  VerifyAccountReqParam({required this.userId, required this.code});
 
-  Map<String, dynamic> toMap() => {'email': email, 'code': code};
+  Map<String, dynamic> toMap() => {'userId': userId, 'code': code};
 }

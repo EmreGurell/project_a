@@ -17,11 +17,13 @@ class CalorieSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double targetCalories = 2500;
+    final double targetCalories =
+        (nutrition != null && nutrition!.dailyGoal > 0)
+            ? nutrition!.dailyGoal
+            : 2500;
     const double targetCarbs = 300;
     const double targetProtein = 150;
     const double targetFat = 80;
-
 
     final double calorieProgress = (nutrition?.totalCalories ?? 0) / targetCalories;
     final double carbProgress = (nutrition?.carbs ?? 0) / targetCarbs;

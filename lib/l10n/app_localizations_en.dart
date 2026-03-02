@@ -47,6 +47,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Network error. Please check your connection and try again.';
 
   @override
+  String get error_timeout => 'Server did not respond. Please try again.';
+
+  @override
   String get onboarding_title_1 => 'Take a photo, let Cimbil calculate';
 
   @override

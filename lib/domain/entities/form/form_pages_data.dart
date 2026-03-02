@@ -12,8 +12,18 @@ class FormPagesData {
       hasAdditionalInfo: false,
       title: "Önce bir kaç soruyla başlayalım!",
       image: ImageAndAnimationPaths.form1,
+      isRequired: false,
     ),
-    // 2 — Hedef
+    // 2 — Kullanıcı adı
+    FormPagesModel(
+      formType: FormType.text,
+      hasAdditionalInfo: false,
+      title: "Kullanıcı adın ne olsun?",
+      fieldKey: "username",
+      hint: "kullanici_adi",
+      inputType: TextInputType.text,
+    ),
+    // 3 — Hedef
     FormPagesModel(
       formType: FormType.choice,
       hasAdditionalInfo: false,
@@ -26,7 +36,7 @@ class FormPagesData {
         "Kas Yapmak",
       ],
     ),
-    // 3 — Cinsiyet
+    // 4 — Cinsiyet
     FormPagesModel(
       formType: FormType.choice,
       hasAdditionalInfo: false,
@@ -34,7 +44,7 @@ class FormPagesData {
       fieldKey: "gender",
       choices: ["Erkek", "Kadın", "Diğer"],
     ),
-    // 4 — Yaş
+    // 5 — Yaş
     FormPagesModel(
       formType: FormType.text,
       hasAdditionalInfo: false,
@@ -44,7 +54,7 @@ class FormPagesData {
       unit: "yaş",
       inputType: TextInputType.number,
     ),
-    // 5 — Boy + Kilo
+    // 6 — Boy + Kilo
     FormPagesModel(
       formType: FormType.dualText,
       hasAdditionalInfo: false,
@@ -57,7 +67,7 @@ class FormPagesData {
       unit2: "kg",
       inputType: TextInputType.number,
     ),
-    // 6 — Aktivite seviyesi
+    // 7 — Aktivite seviyesi
     FormPagesModel(
       formType: FormType.choice,
       hasAdditionalInfo: true,
@@ -71,6 +81,40 @@ class FormPagesData {
           "• Orta Aktif: Haftada 3-5 gün orta egzersiz\n"
           "• Çok Aktif: Haftada 6-7 gün yoğun egzersiz",
       choices: ["Hareketsiz", "Az Aktif", "Orta Aktif", "Çok Aktif"],
+    ),
+    // 8 — Alerjenler (isteğe bağlı)
+    FormPagesModel(
+      formType: FormType.multiChoice,
+      hasAdditionalInfo: false,
+      title: "Herhangi bir alerjin var mı?",
+      fieldKey: "allergies",
+      isRequired: false,
+      choices: [
+        "Gluten",
+        "Süt/Laktoz",
+        "Yumurta",
+        "Kuruyemiş",
+        "Soya",
+        "Balık",
+        "Deniz Ürünleri",
+        "Fıstık",
+      ],
+    ),
+    // 9 — Sağlık durumları (isteğe bağlı)
+    FormPagesModel(
+      formType: FormType.multiChoice,
+      hasAdditionalInfo: false,
+      title: "Herhangi bir sağlık durumun var mı?",
+      fieldKey: "healthConditions",
+      isRequired: false,
+      choices: [
+        "Diyabet",
+        "Hipertansiyon",
+        "Kalp Hastalığı",
+        "Çölyak",
+        "Yüksek Kolesterol",
+        "Obezite",
+      ],
     ),
   ];
 }

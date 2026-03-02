@@ -28,14 +28,24 @@ class AuthRepositoryImpl extends AuthRepository {
 
       await localService.saveToken(model.token);
 
-      return Right(AuthEntity(token: model.token));
+      return Right(AuthEntity(
+        token: model.token,
+        id: model.loginUserId ?? '',
+        email: model.loginUserEmail ?? '',
+        firstName: model.loginUserFirstName ?? '',
+        lastName: model.loginUserLastName ?? '',
+        username: model.loginUsername,
+        hasProfile: model.hasProfile ?? false,
+      ));
     } on DioException catch (e) {
-      return Left(e.response?.data['message'] ?? 'NETWORK_ERROR');
+      return Left(_errorCode(e));
+    } catch (e) {
+      return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<String, AuthEntity>> signUp(SignUpReqParam params) async {
+  Future<Either<String, String>> signUp(SignUpReqParam params) async {
     try {
       final model = await apiService.signUp(params);
 
@@ -43,11 +53,11 @@ class AuthRepositoryImpl extends AuthRepository {
         return Left(model.message);
       }
 
-      await localService.saveToken(model.token);
-
-      return Right(AuthEntity(token: model.token));
+      return Right(model.userId);
     } on DioException catch (e) {
-      return Left(e.response?.data['message'] ?? 'NETWORK_ERROR');
+      return Left(_errorCode(e));
+    } catch (e) {
+      return Left(e.toString());
     }
   }
 
@@ -75,7 +85,9 @@ class AuthRepositoryImpl extends AuthRepository {
       if (!model.success) return Left(model.message);
       return const Right(null);
     } on DioException catch (e) {
-      return Left(e.response?.data['message'] ?? 'NETWORK_ERROR');
+      return Left(_errorCode(e));
+    } catch (e) {
+      return Left(e.toString());
     }
   }
 
@@ -88,7 +100,9 @@ class AuthRepositoryImpl extends AuthRepository {
       if (!model.success) return Left(model.message);
       return const Right(null);
     } on DioException catch (e) {
-      return Left(e.response?.data['message'] ?? 'NETWORK_ERROR');
+      return Left(_errorCode(e));
+    } catch (e) {
+      return Left(e.toString());
     }
   }
 
@@ -99,9 +113,14 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       final model = await apiService.verifyAccount(param);
       if (!model.success) return Left(model.message);
+      if (model.token.isNotEmpty) {
+        await localService.saveToken(model.token);
+      }
       return const Right(null);
     } on DioException catch (e) {
-      return Left(e.response?.data['message'] ?? 'NETWORK_ERROR');
+      return Left(_errorCode(e));
+    } catch (e) {
+      return Left(e.toString());
     }
   }
 
@@ -114,7 +133,24 @@ class AuthRepositoryImpl extends AuthRepository {
       if (!model.success) return Left(model.message);
       return const Right(null);
     } on DioException catch (e) {
-      return Left(e.response?.data['message'] ?? 'NETWORK_ERROR');
+      return Left(_errorCode(e));
+    } catch (e) {
+      return Left(e.toString());
     }
+  }
+
+  /// Backend hata response'undan önce `code`, yoksa `message` alır.
+  /// Timeout durumlarını özel olarak yakalar.
+  static String _errorCode(DioException e) {
+    if (e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.sendTimeout ||
+        e.type == DioExceptionType.connectionTimeout) {
+      return 'TIMEOUT';
+    }
+    final data = e.response?.data;
+    if (data is Map) {
+      return (data['code'] ?? data['message'] ?? 'NETWORK_ERROR').toString();
+    }
+    return 'NETWORK_ERROR';
   }
 }

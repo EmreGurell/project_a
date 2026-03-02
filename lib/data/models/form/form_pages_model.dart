@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum FormType { image, text, choice, animation, dualText }
+enum FormType { image, text, choice, animation, dualText, multiChoice }
 
 class FormPagesModel {
   final String title;
@@ -17,6 +17,7 @@ class FormPagesModel {
   final String? unit;
   final String? unit2;
   final TextInputType? inputType;
+  final bool isRequired;
 
   FormPagesModel({
     required this.title,
@@ -33,5 +34,6 @@ class FormPagesModel {
     this.unit,
     this.unit2,
     this.inputType,
+    this.isRequired = true,
   });
 }

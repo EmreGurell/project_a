@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:project_a/common/bloc/button/button_state.dart';
-import 'package:project_a/common/bloc/button/button_state_cubit.dart';
+import 'package:project_a/common/bloc/auth/auth_state.dart';
+import 'package:project_a/common/bloc/auth/auth_state_cubit.dart';
 import 'package:project_a/core/di/service_locator.dart';
 import 'package:project_a/core/errors/error_mapper.dart';
 import 'package:project_a/core/router/route_names.dart';
@@ -17,8 +17,6 @@ import 'package:project_a/utils/device/device_utility.dart';
 import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/presentation/widgets/auth/shadowed_text_field.dart';
 
-import '../../../data/models/auth/signup_req_params.dart';
-import '../../../domain/usecases/auth/signup.dart';
 import '../../widgets/auth/form_titles.dart';
 import '../../widgets/auth/social_login.dart';
 
@@ -30,7 +28,7 @@ class RegisterPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: BlocProvider(
-        create: (context) => sl<ButtonStateCubit>(),
+        create: (context) => sl<AuthStateCubit>(),
         child: Stack(
           children: const [
             _RegisterBackground(),
@@ -126,6 +124,7 @@ class _RegisterFormState extends State<_RegisterForm> {
   late final TextEditingController passwordController;
   late final TextEditingController nameController;
   late final TextEditingController surnameController;
+  bool _submitting = false;
 
   @override
   void initState() {
@@ -149,132 +148,137 @@ class _RegisterFormState extends State<_RegisterForm> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocListener<ButtonStateCubit, ButtonState>(
+    return BlocListener<AuthStateCubit, AuthState>(
       listener: (context, state) {
-        if (state is ButtonSuccessState) {
+        if (state is AuthRegistered) {
           context.go(
             RouteNames.verifyAccountRoute,
             extra: {
-              'email': emailController.text.trim(),
+              'userId': state.userId,
+              'email': state.email,
               'isForReset': false,
             },
           );
         }
-        if (state is ButtonFailureState) {
+        if (state is AuthFailure) {
+          _submitting = false;
           final mappedMessage = ErrorMapper.getErrorMessage(
             context,
-            state.errorMessage,
+            state.message,
           );
           AppSnackbar.showError(context, message: mappedMessage);
         }
       },
       child: Form(
         key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          FormTitles(
-            title: l10n.register_title,
-            subtitle: l10n.register_subtitle,
-          ),
-          const SizedBox(height: ProjectSizes.spaceBtwItems),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FormTitles(
+              title: l10n.register_title,
+              subtitle: l10n.register_subtitle,
+            ),
+            const SizedBox(height: ProjectSizes.spaceBtwItems),
 
-          Row(
-            children: [
-              Expanded(
-                child: ShadowedTextField(
-                  controller: nameController,
-                  keyboardType: TextInputType.name,
-                  validator: (value) => FormValidators.firstName(value, l10n),
-                  decoration: InputDecoration(
-                    labelText: l10n.register_first_name_label,
-                    prefixIcon: const PhosphorIcon(PhosphorIconsRegular.user),
+            Row(
+              children: [
+                Expanded(
+                  child: ShadowedTextField(
+                    controller: nameController,
+                    keyboardType: TextInputType.name,
+                    validator: (value) => FormValidators.firstName(value, l10n),
+                    decoration: InputDecoration(
+                      labelText: l10n.register_first_name_label,
+                      prefixIcon: const PhosphorIcon(PhosphorIconsRegular.user),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: ProjectSizes.spaceBtwItems),
-              Expanded(
-                child: ShadowedTextField(
-                  controller: surnameController,
-                  keyboardType: TextInputType.name,
-                  validator: (value) => FormValidators.lastName(value, l10n),
-                  decoration: InputDecoration(
-                    labelText: l10n.register_last_name_label,
-                    prefixIcon: const PhosphorIcon(PhosphorIconsRegular.user),
+                const SizedBox(width: ProjectSizes.spaceBtwItems),
+                Expanded(
+                  child: ShadowedTextField(
+                    controller: surnameController,
+                    keyboardType: TextInputType.name,
+                    validator: (value) => FormValidators.lastName(value, l10n),
+                    decoration: InputDecoration(
+                      labelText: l10n.register_last_name_label,
+                      prefixIcon: const PhosphorIcon(PhosphorIconsRegular.user),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: ProjectSizes.spaceBtwItems),
-
-          ShadowedTextField(
-            controller: emailController,
-            keyboardType: TextInputType.emailAddress,
-            validator: (value) => FormValidators.email(value, l10n),
-            decoration: InputDecoration(
-              labelText: l10n.email,
-              hintText: l10n.email,
-              prefixIcon: const PhosphorIcon(PhosphorIconsRegular.envelope),
+              ],
             ),
-          ),
 
-          const SizedBox(height: ProjectSizes.spaceBtwItems),
+            const SizedBox(height: ProjectSizes.spaceBtwItems),
 
-          ShadowedTextField(
-            controller: passwordController,
-            keyboardType: TextInputType.visiblePassword,
-            obscureText: true,
-            validator: (value) => FormValidators.password(value, l10n),
-            decoration: InputDecoration(
-              labelText: l10n.password,
-              hintText: l10n.password,
-              prefixIcon: const PhosphorIcon(PhosphorIconsRegular.lock),
-              suffixIcon: IconButton(
-                icon: const PhosphorIcon(PhosphorIconsRegular.eye),
-                onPressed: () {},
+            ShadowedTextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) => FormValidators.email(value, l10n),
+              decoration: InputDecoration(
+                labelText: l10n.email,
+                hintText: l10n.email,
+                prefixIcon: const PhosphorIcon(PhosphorIconsRegular.envelope),
               ),
             ),
-          ),
 
-          const SizedBox(height: ProjectSizes.spaceBtwItems),
+            const SizedBox(height: ProjectSizes.spaceBtwItems),
 
-          Button3D(
-            text: l10n.register_button,
-            onPressed: () async {
-              if (!(_formKey.currentState?.validate() ?? false)) {
-                return;
-              }
-              FocusScope.of(context).unfocus();
-              context.read<ButtonStateCubit>().execute(
-                usecase: sl<SignUpUseCase>(),
-                params: SignUpReqParam(
-                  firstName: nameController.text.trim(),
-                  lastName: surnameController.text.trim(),
-                  email: emailController.text.trim(),
-                  password: passwordController.text,
+            ShadowedTextField(
+              controller: passwordController,
+              keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
+              validator: (value) => FormValidators.password(value, l10n),
+              decoration: InputDecoration(
+                labelText: l10n.password,
+                hintText: l10n.password,
+                prefixIcon: const PhosphorIcon(PhosphorIconsRegular.lock),
+                suffixIcon: IconButton(
+                  icon: const PhosphorIcon(PhosphorIconsRegular.eye),
+                  onPressed: () {},
                 ),
-              );
-            },
-          ),
-
-          const SizedBox(height: ProjectSizes.spaceBtwItems),
-
-          TextButton(
-            onPressed: () => context.go(RouteNames.loginRoute),
-            child: Text(
-              l10n.register_have_account,
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                decoration: TextDecoration.underline,
               ),
             ),
-          ),
 
-          const SocialLogin(),
-        ],
+            const SizedBox(height: ProjectSizes.spaceBtwItems),
+
+            BlocBuilder<AuthStateCubit, AuthState>(
+              builder: (context, state) {
+                final isLoading = state is AuthLoading;
+                return Button3D(
+                  text: l10n.register_button,
+                  isLoading: isLoading,
+                  onPressed: () {
+                    if (_submitting) return;
+                    if (!(_formKey.currentState?.validate() ?? false)) return;
+                    _submitting = true;
+                    FocusScope.of(context).unfocus();
+                    context.read<AuthStateCubit>().register(
+                          emailController.text.trim(),
+                          passwordController.text,
+                          nameController.text.trim(),
+                          surnameController.text.trim(),
+                        );
+                  },
+                );
+              },
+            ),
+
+            const SizedBox(height: ProjectSizes.spaceBtwItems),
+
+            TextButton(
+              onPressed: () => context.go(RouteNames.loginRoute),
+              child: Text(
+                l10n.register_have_account,
+                style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                      decoration: TextDecoration.underline,
+                    ),
+              ),
+            ),
+
+            const SocialLogin(),
+          ],
+        ),
       ),
-    ),
     );
   }
 }

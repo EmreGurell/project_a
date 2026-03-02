@@ -49,6 +49,7 @@ class ProfilePage extends StatelessWidget {
 
             if (state is ProfileLoaded) {
               final user = state.user;
+              final metrics = state.metrics;
               return ListView(
                 padding: const EdgeInsets.all(ProjectSizes.pagePadding),
                 children: [
@@ -59,28 +60,30 @@ class ProfilePage extends StatelessWidget {
                     showProBadge: true,
                   ),
                   const SizedBox(height: ProjectSizes.spaceBtwSections),
-                  const StatsCardsRow(
+                  StatsCardsRow(
                     scrollable: false,
                     cards: [
                       StatCard(
                         title: 'BMI',
-                        value: '22.4',
-                        subtitle: '-1.2%',
+                        value: metrics != null && metrics.bmi > 0
+                            ? metrics.bmi.toStringAsFixed(1)
+                            : '--',
                         icon: Icons.monitor_weight,
-                        subtitleColor: Color.fromARGB(255, 37, 155, 76),
                       ),
                       StatCard(
                         title: 'STREAK',
-                        value: '14',
+                        value: metrics != null ? '${metrics.currentStreak}' : '--',
                         subtitle: 'Days',
                         icon: Icons.local_fire_department,
                         subtitleColor: Colors.grey,
                       ),
                       StatCard(
                         title: 'CALS',
-                        value: '2400',
+                        value: metrics != null && metrics.dailyCalorieGoal > 0
+                            ? metrics.dailyCalorieGoal.toInt().toString()
+                            : '--',
                         icon: Icons.flag,
-                        progress: 0.75,
+                        progress: 0,
                       ),
                     ],
                   ),
@@ -88,28 +91,34 @@ class ProfilePage extends StatelessWidget {
                   ProfileBodyCard(
                     title: 'Vücut Bilgileri',
                     items: [
-                      const BodyItem(
+                      BodyItem(
                         icon: Icons.height,
                         title: 'Boy',
-                        value: '175 cm',
+                        value: metrics != null && metrics.height > 0
+                            ? '${metrics.height.toInt()} cm'
+                            : 'Belirtilmemiş',
                         bgColor: ProjectColors.mainCardBlue,
                       ),
-                      const BodyItem(
+                      BodyItem(
                         icon: Icons.monitor_weight,
                         title: 'Kilo',
-                        value: '68 kg',
+                        value: metrics != null && metrics.weight > 0
+                            ? '${metrics.weight.toInt()} kg'
+                            : 'Belirtilmemiş',
                         bgColor: ProjectColors.purple,
                       ),
                       BodyItem(
                         icon: Icons.cake,
                         title: 'Yaş',
-                        value: 'Belirtilmemiş',
+                        value: metrics?.age != null
+                            ? '${metrics!.age} yaş'
+                            : 'Belirtilmemiş',
                         bgColor: ProjectColors.orange,
                       ),
                       BodyItem(
                         icon: Icons.person_outline,
                         title: 'Cinsiyet',
-                        value: 'Diğer',
+                        value: _mapGenderDisplay(metrics?.gender),
                         bgColor: ProjectColors.orange,
                       ),
                     ],
@@ -146,5 +155,18 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _mapGenderDisplay(String? gender) {
+    switch (gender) {
+      case 'male':
+        return 'Erkek';
+      case 'female':
+        return 'Kadın';
+      case 'other':
+        return 'Diğer';
+      default:
+        return 'Belirtilmemiş';
+    }
   }
 }

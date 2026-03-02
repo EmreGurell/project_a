@@ -50,6 +50,9 @@ class AppLocalizationsTr extends AppLocalizations {
       'Ağ hatası oluştu. Bağlantınızı kontrol edip tekrar deneyin.';
 
   @override
+  String get error_timeout => 'Sunucu yanıt vermedi. Lütfen tekrar deneyin.';
+
+  @override
   String get onboarding_title_1 => 'Fotoğraf çek, Cımbıl hesaplasın';
 
   @override

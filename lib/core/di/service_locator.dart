@@ -19,8 +19,11 @@ import 'package:project_a/domain/usecases/auth/signin.dart';
 import 'package:project_a/domain/usecases/auth/signup.dart';
 import 'package:project_a/domain/usecases/auth/verify_account.dart';
 import 'package:project_a/domain/usecases/home/get_data_by_date.dart';
+import 'package:project_a/domain/usecases/nutrition/log_nutrition.dart';
 import 'package:project_a/domain/usecases/onboarding/complete_onboarding.dart';
 import 'package:project_a/domain/usecases/user/get_current_user.dart';
+import 'package:project_a/domain/usecases/user/get_user_metrics.dart';
+import 'package:project_a/domain/usecases/user/submit_user_form.dart';
 import 'package:project_a/data/source/ai/ai_api_service.dart';
 import 'package:project_a/presentation/bloc/cimbil/cimbil_bloc.dart';
 import 'package:project_a/presentation/bloc/form/profile_setup_bloc.dart';
@@ -61,7 +64,11 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerLazySingleton<UserRepository>(()=>UserRepositoryImpl(apiService: sl()));
   sl.registerLazySingleton<AppEntryRepository>(
-    () => AppEntryRepositoryImpl(authRepository: sl(), localService: sl()),
+    () => AppEntryRepositoryImpl(
+      authRepository: sl(),
+      localService: sl(),
+      userRepository: sl(),
+    ),
   );
   sl.registerLazySingleton<NutritionRepository>(() => NutritionRepositoryImpl(apiService: sl()));
   /// UseCases
@@ -79,15 +86,23 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => ResendVerificationCodeUseCase(authRepository: sl()));
   sl.registerLazySingleton(()=> GetCurrentUserUseCase(userRepository: sl()));
   sl.registerLazySingleton(()=> GetNutritionDataByDate(nutritionRepository: sl()));
+  sl.registerLazySingleton(()=> SubmitUserFormUseCase(userRepository: sl()));
+  sl.registerLazySingleton(()=> GetUserMetricsUseCase(userRepository: sl()));
+  sl.registerLazySingleton(() => LogNutritionUseCase(nutritionRepository: sl()));
   /// Cubit
   sl.registerFactory<AppEntryCubit>(() => AppEntryCubit(sl(), sl()));
   sl.registerFactory<ButtonStateCubit>(() => ButtonStateCubit());
   sl.registerFactory<AuthStateCubit>(
-    () => AuthStateCubit(signInUseCase: sl(), signUpUseCase: sl(),logoutUseCase: sl()),
+    () => AuthStateCubit(
+      signInUseCase: sl(),
+      signUpUseCase: sl(),
+      logoutUseCase: sl(),
+      localStorageService: sl(),
+    ),
   );
-  sl.registerFactory<ProfileSetupBloc>(() => ProfileSetupBloc(localService: sl()));
+  sl.registerFactory<ProfileSetupBloc>(() => ProfileSetupBloc(localService: sl(), submitUserFormUseCase: sl()));
   sl.registerFactory<CimbilBloc>(() => CimbilBloc(aiService: sl(), localService: sl()));
-  sl.registerFactory<NutritionResultBloc>(() => NutritionResultBloc(aiService: sl()));
+  sl.registerFactory<NutritionResultBloc>(() => NutritionResultBloc(aiService: sl(), logNutritionUseCase: sl()));
   sl.registerFactory<HomeBloc>(()=>HomeBloc(sl(),sl()));
-  sl.registerFactory<ProfileBloc>(()=>ProfileBloc(getCurrentUserUseCase: sl()));
+  sl.registerFactory<ProfileBloc>(() => ProfileBloc(getCurrentUserUseCase: sl(), getUserMetricsUseCase: sl()));
 }

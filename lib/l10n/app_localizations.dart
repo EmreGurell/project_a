@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Network error. Please check your connection and try again.'**
   String get error_network_error;
 
+  /// No description provided for @error_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Server did not respond. Please try again.'**
+  String get error_timeout;
+
   /// ----- ONBOARDING -----
   ///
   /// In en, this message translates to:

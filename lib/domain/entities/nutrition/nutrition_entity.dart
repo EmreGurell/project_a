@@ -5,6 +5,7 @@ class NutritionEntity {
   final double carbs;
   final double fat;
   final DateTime date;
+  final double dailyGoal;
 
   NutritionEntity({
     required this.id,
@@ -13,5 +14,6 @@ class NutritionEntity {
     required this.carbs,
     required this.fat,
     required this.date,
+    this.dailyGoal = 0,
   });
 }

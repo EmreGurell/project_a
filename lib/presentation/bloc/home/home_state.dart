@@ -23,15 +23,18 @@ class HomeLoaded extends HomeState {
   });
 
   HomeLoaded copyWith({
+    UserEntity? user,
     NutritionEntity? nutrition,
+    bool clearNutrition = false,
     DateTime? selectedDate,
+    List<DateTime>? dateRange,
     bool? isNutritionLoading,
   }) {
     return HomeLoaded(
-      user: user,
-      dateRange: dateRange,
+      user: user ?? this.user,
+      dateRange: dateRange ?? this.dateRange,
       selectedDate: selectedDate ?? this.selectedDate,
-      nutrition: nutrition ?? this.nutrition,
+      nutrition: clearNutrition ? null : (nutrition ?? this.nutrition),
       isNutritionLoading: isNutritionLoading ?? this.isNutritionLoading,
     );
   }

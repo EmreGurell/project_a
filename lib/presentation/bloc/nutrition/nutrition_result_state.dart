@@ -15,3 +15,16 @@ class NutritionResultError extends NutritionResultState {
   final String message;
   NutritionResultError(this.message);
 }
+
+class NutritionLogLoading extends NutritionResultState {
+  final AiNutritionResultModel result;
+  NutritionLogLoading(this.result);
+}
+
+class NutritionLogSuccess extends NutritionResultState {}
+
+class NutritionLogError extends NutritionResultState {
+  final AiNutritionResultModel result;
+  final String message;
+  NutritionLogError({required this.result, required this.message});
+}

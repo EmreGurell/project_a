@@ -11,6 +11,7 @@
   "error_user_already_exists": "User already exists. Please try again.",
   "error_invalid_response": "Unexpected response received from server. Please try again.",
   "error_network_error": "Network error. Please check your connection and try again.",
+  "error_timeout": "Server did not respond. Please try again.",
   
   "@onboarding_title_1": {
     "description": "----- ONBOARDING -----"

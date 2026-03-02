@@ -15,7 +15,7 @@ abstract class AuthApiService {
   Future<AuthResponseModel> signIn(SignInReqParam signInReq);
   Future<BaseResponseModel> forgotPassword(ForgotPasswordReqParam param);
   Future<BaseResponseModel> resetPassword(ResetPasswordReqParam param);
-  Future<BaseResponseModel> verifyAccount(VerifyAccountReqParam param);
+  Future<AuthResponseModel> verifyAccount(VerifyAccountReqParam param);
   Future<BaseResponseModel> resendVerificationCode(ResendVerificationReqParam param);
 }
 
@@ -61,12 +61,12 @@ class AuthApiServiceImpl implements AuthApiService {
   }
 
   @override
-  Future<BaseResponseModel> verifyAccount(VerifyAccountReqParam param) async {
+  Future<AuthResponseModel> verifyAccount(VerifyAccountReqParam param) async {
     final response = await dioClient.post(
       ApiEndpoints.verifyAccount,
       data: param.toMap(),
     );
-    return BaseResponseModel.fromJson(response.data);
+    return AuthResponseModel.fromJson(response.data);
   }
 
   @override

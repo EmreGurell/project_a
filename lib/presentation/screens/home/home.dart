@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_a/core/errors/error_mapper.dart';
+import 'package:project_a/main.dart';
 import 'package:project_a/presentation/bloc/home/home_bloc.dart';
 import 'package:project_a/presentation/bloc/home/home_event.dart';
 import 'package:project_a/presentation/bloc/home/home_state.dart';
@@ -9,11 +11,45 @@ import 'package:project_a/presentation/widgets/home/water_intake_card.dart';
 import 'package:project_a/presentation/widgets/home/date_picker.dart';
 import 'package:project_a/presentation/widgets/home/header.dart';
 import 'package:project_a/presentation/widgets/home/health_stats_row.dart';
+import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 import '../../../shared/widgets/buttons/headline.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    nutritionLoggedNotifier.addListener(_onNutritionLogged);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    nutritionLoggedNotifier.removeListener(_onNutritionLogged);
+    super.dispose();
+  }
+
+  void _onNutritionLogged() {
+    context.read<HomeBloc>().add(ChangeDate(DateTime.now()));
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final blocState = context.read<HomeBloc>().state;
+      if (blocState is HomeError) {
+        context.read<HomeBloc>().add(LoadCurrentUser());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +62,42 @@ class HomePage extends StatelessWidget {
           } else if (state is HomeLoaded) {
             return const _HomeBody();
           } else if (state is HomeError) {
-            return Center(child: Text(state.message));
+            return _HomeErrorView(errorCode: state.message);
           }
           return const SizedBox.shrink();
         },
+      ),
+    );
+  }
+}
+
+class _HomeErrorView extends StatelessWidget {
+  final String errorCode;
+  const _HomeErrorView({required this.errorCode});
+
+  @override
+  Widget build(BuildContext context) {
+    final message = ErrorMapper.getErrorMessage(context, errorCode);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(ProjectSizes.pagePadding),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.wifi_off_rounded, size: 48, color: ProjectColors.gray),
+            const SizedBox(height: 16),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 24),
+            TextButton(
+              onPressed: () => context.read<HomeBloc>().add(LoadCurrentUser()),
+              child: const Text('Tekrar Dene'),
+            ),
+          ],
+        ),
       ),
     );
   }

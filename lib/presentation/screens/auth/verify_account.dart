@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:project_a/common/bloc/button/button_state.dart';
-import 'package:project_a/common/bloc/button/button_state_cubit.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:project_a/core/di/service_locator.dart';
 import 'package:project_a/core/errors/error_mapper.dart';
 import 'package:project_a/core/router/route_names.dart';
@@ -13,8 +11,6 @@ import 'package:project_a/domain/usecases/auth/resend_verification_code.dart';
 import 'package:project_a/domain/usecases/auth/verify_account.dart';
 import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/presentation/widgets/auth/form_titles.dart';
-import 'package:project_a/presentation/widgets/auth/shadowed_text_field.dart';
-import 'package:project_a/shared/widgets/buttons/3d_button.dart';
 import 'package:project_a/shared/widgets/snackbar/custom_snackbar.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/image_paths.dart';
@@ -24,13 +20,17 @@ import 'package:project_a/utils/device/device_utility.dart';
 class VerifyAccountPage extends StatelessWidget {
   final String email;
 
+  /// Register akışı için userId (isForReset=false). Şifre sıfırlama akışında null.
+  final String? userId;
+
   /// true  → şifre sıfırlama akışından gelindi (kodu gir → reset password)
-  /// false → kayıt sonrası hesap doğrulama (kodu gir → home)
+  /// false → kayıt sonrası hesap doğrulama (kodu gir → form)
   final bool isForReset;
 
   const VerifyAccountPage({
     super.key,
     required this.email,
+    this.userId,
     this.isForReset = false,
   });
 
@@ -38,15 +38,12 @@ class VerifyAccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: BlocProvider(
-        create: (_) => sl<ButtonStateCubit>(),
-        child: Stack(
-          children: [
-            const _VerifyBg(),
-            const _VerifyMascot(),
-            _VerifyCard(email: email, isForReset: isForReset),
-          ],
-        ),
+      body: Stack(
+        children: [
+          const _VerifyBg(),
+          const _VerifyMascot(),
+          _VerifyCard(email: email, userId: userId, isForReset: isForReset),
+        ],
       ),
     );
   }
@@ -90,9 +87,14 @@ class _VerifyMascot extends StatelessWidget {
 
 class _VerifyCard extends StatelessWidget {
   final String email;
+  final String? userId;
   final bool isForReset;
 
-  const _VerifyCard({required this.email, required this.isForReset});
+  const _VerifyCard({
+    required this.email,
+    required this.userId,
+    required this.isForReset,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +113,7 @@ class _VerifyCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               offset: const Offset(0, -4),
               blurRadius: 12,
             ),
@@ -119,7 +121,11 @@ class _VerifyCard extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(ProjectSizes.pagePadding),
-          child: _VerifyAccountForm(email: email, isForReset: isForReset),
+          child: _VerifyAccountForm(
+            email: email,
+            userId: userId,
+            isForReset: isForReset,
+          ),
         ),
       ),
     );
@@ -128,10 +134,12 @@ class _VerifyCard extends StatelessWidget {
 
 class _VerifyAccountForm extends StatefulWidget {
   final String email;
+  final String? userId;
   final bool isForReset;
 
   const _VerifyAccountForm({
     required this.email,
+    required this.userId,
     required this.isForReset,
   });
 
@@ -140,36 +148,65 @@ class _VerifyAccountForm extends StatefulWidget {
 }
 
 class _VerifyAccountFormState extends State<_VerifyAccountForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _codeController = TextEditingController();
+  final _pinController = PinInputController();
+  bool _isLoading = false;
   bool _isResending = false;
 
   AppLocalizations get l10n => AppLocalizations.of(context)!;
 
   @override
   void dispose() {
-    _codeController.dispose();
+    _pinController.dispose();
     super.dispose();
   }
 
-  String? _validateCode(String? value) {
-    final code = value?.trim() ?? '';
-    if (code.isEmpty) return l10n.validation_code_required;
-    if (code.length != 6) return l10n.validation_code_length;
-    return null;
-  }
+  Future<void> _onCodeCompleted(String code) async {
+    if (widget.isForReset) {
+      context.go(RouteNames.resetPasswordRoute, extra: {
+        'email': widget.email,
+        'code': code,
+      });
+      return;
+    }
 
-  Future<void> _resendCode() async {
-    setState(() => _isResending = true);
+    setState(() => _isLoading = true);
     try {
-      final result = await sl<ResendVerificationCodeUseCase>().call(
-        param: ResendVerificationReqParam(email: widget.email),
+      final result = await sl<VerifyAccountUseCase>().call(
+        param: VerifyAccountReqParam(userId: widget.userId!, code: code),
       );
       result.fold(
         (error) {
           if (mounted) {
-            final msg = ErrorMapper.getErrorMessage(context, error);
-            AppSnackbar.showError(context, message: msg);
+            _pinController.clear();
+            AppSnackbar.showError(
+              context,
+              message: ErrorMapper.getErrorMessage(context, error),
+            );
+          }
+        },
+        (_) {
+          if (mounted) context.go(RouteNames.formRoute);
+        },
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _resendCode() async {
+    if (widget.userId == null) return;
+    setState(() => _isResending = true);
+    try {
+      final result = await sl<ResendVerificationCodeUseCase>().call(
+        param: ResendVerificationReqParam(userId: widget.userId!),
+      );
+      result.fold(
+        (error) {
+          if (mounted) {
+            AppSnackbar.showError(
+              context,
+              message: ErrorMapper.getErrorMessage(context, error),
+            );
           }
         },
         (_) {
@@ -187,79 +224,55 @@ class _VerifyAccountFormState extends State<_VerifyAccountForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ButtonStateCubit, ButtonState>(
-      listener: (context, state) {
-        if (state is ButtonSuccessState) {
-          if (widget.isForReset) {
-            context.go(RouteNames.resetPasswordRoute, extra: {
-              'email': widget.email,
-              'code': _codeController.text.trim(),
-            });
-          } else {
-            context.go(RouteNames.formRoute);
-          }
-        }
-        if (state is ButtonFailureState) {
-          final mappedMessage =
-              ErrorMapper.getErrorMessage(context, state.errorMessage);
-          AppSnackbar.showError(context, message: mappedMessage);
-        }
-      },
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            FormTitles(
-              title: l10n.verify_account_title,
-              subtitle: l10n.verify_account_subtitle,
-            ),
-            _EmailChip(email: widget.email),
-            const SizedBox(height: ProjectSizes.spaceBtwItems),
-            _OtpField(
-              controller: _codeController,
-              validator: _validateCode,
-              label: l10n.verify_account_code_label,
-            ),
-            const SizedBox(height: ProjectSizes.spaceBtwSections),
-            BlocBuilder<ButtonStateCubit, ButtonState>(
-              builder: (context, state) {
-                final isLoading = state is ButtonLoadingState;
-                return Button3D(
-                  text: l10n.verify_account_button,
-                  isLoading: isLoading,
-                  loadingText: l10n.verify_account_loading,
-                  onPressed: () {
-                    if (!(_formKey.currentState?.validate() ?? false)) {
-                      return;
-                    }
-                    FocusScope.of(context).unfocus();
-                    context.read<ButtonStateCubit>().execute(
-                          usecase: sl<VerifyAccountUseCase>(),
-                          params: VerifyAccountReqParam(
-                            email: widget.email,
-                            code: _codeController.text.trim(),
-                          ),
-                        );
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: ProjectSizes.spaceBtwItems),
-            TextButton(
-              onPressed: _isResending ? null : _resendCode,
-              child: Text(
-                _isResending
-                    ? l10n.verify_account_resend_loading
-                    : l10n.verify_account_resend,
-                style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      decoration: TextDecoration.underline,
-                    ),
-              ),
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FormTitles(
+          title: l10n.verify_account_title,
+          subtitle: l10n.verify_account_subtitle,
         ),
-      ),
+        _EmailChip(email: widget.email),
+        const SizedBox(height: ProjectSizes.spaceBtwSections),
+        MaterialPinField(
+          length: 6,
+          keyboardType: TextInputType.number,
+          pinController: _pinController,
+          autoFocus: true,
+          onCompleted: _isLoading ? null : _onCodeCompleted,
+          onChanged: (_) {},
+          theme: const MaterialPinTheme(
+            shape: MaterialPinShape.outlined,
+            cellSize: Size(48, 56),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+            focusedBorderColor: ProjectColors.orange,
+            filledBorderColor: ProjectColors.orange,
+            fillColor: Colors.white,
+            focusedFillColor: Colors.white,
+            filledFillColor: Colors.white,
+            entryAnimation: MaterialPinAnimation.fade,
+          ),
+        ),
+        if (_isLoading) ...[
+          const SizedBox(height: ProjectSizes.spaceBtwItems),
+          const Center(
+            child: CircularProgressIndicator(color: ProjectColors.orange),
+          ),
+        ],
+        if (!widget.isForReset) ...[
+          const SizedBox(height: ProjectSizes.spaceBtwItems),
+          TextButton(
+            onPressed: _isResending ? null : _resendCode,
+            child: Text(
+              _isResending
+                  ? l10n.verify_account_resend_loading
+                  : l10n.verify_account_resend,
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    decoration: TextDecoration.underline,
+                  ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -278,10 +291,10 @@ class _EmailChip extends StatelessWidget {
         vertical: ProjectSizes.paddingSm,
       ),
       decoration: BoxDecoration(
-        color: ProjectColors.orange.withOpacity(0.08),
+        color: ProjectColors.orange.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(ProjectSizes.borderRadiusLg),
         border: Border.all(
-          color: ProjectColors.orange.withOpacity(0.3),
+          color: ProjectColors.orange.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -312,32 +325,6 @@ class _EmailChip extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _OtpField extends StatelessWidget {
-  final TextEditingController controller;
-  final String? Function(String?)? validator;
-  final String label;
-
-  const _OtpField({
-    required this.controller,
-    required this.validator,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ShadowedTextField(
-      controller: controller,
-      keyboardType: TextInputType.number,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: const PhosphorIcon(PhosphorIconsRegular.keyhole),
-        counterText: '',
       ),
     );
   }

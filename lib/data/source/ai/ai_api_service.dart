@@ -45,11 +45,12 @@ class AiApiServiceImpl implements AiApiService {
     try {
       final request = await client.postUrl(uri);
       request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
-      request.write(jsonEncode({
-        'messages': messages.map((m) => m.toJson()).toList(),
-        'user_context': userContext,
-        'temperature': 0.7,
-      }));
+      request.write(
+        jsonEncode({
+          'messages': messages.map((m) => m.toJson()).toList(),
+          'user_context': userContext,
+        }),
+      );
 
       final response = await request.close();
       if (response.statusCode != 200) {
@@ -81,7 +82,7 @@ class AiApiServiceImpl implements AiApiService {
   @override
   Future<AiNutritionResultModel> analyzeBarcode(String barcode) async {
     final response = await _dio.post(
-      '/analyze/barcode',
+      ApiEndpoints.aiAnalyzeBarcode,
       data: {'barcode': barcode},
     );
     return AiNutritionResultModel.fromJson(
@@ -95,7 +96,7 @@ class AiApiServiceImpl implements AiApiService {
       'image': await MultipartFile.fromFile(imagePath),
     });
     final response = await _dio.post(
-      '/analyze',
+      ApiEndpoints.aiAnalyzeImage,
       data: formData,
       options: Options(contentType: 'multipart/form-data'),
     );

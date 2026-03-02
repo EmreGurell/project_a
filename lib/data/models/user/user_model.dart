@@ -10,18 +10,21 @@ class UserModel extends UserEntity {
     required super.firstName,
     required super.lastName,
     super.profilePicture,
-
+    super.hasProfile,
+    super.isVerified,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
+      id: (json['id'] ?? '').toString(),
       email: json['email'] ?? "",
-      username: json['username'] ?? "Bilinmiyor",
-      role: json['role'] ?? "USER",
-      status: json['status'] ?? "ACTIVE",
+      username: json['username'] ?? "",
+      role: json['role'] ?? "",
+      status: json['status'] ?? "",
       firstName: json['firstName'] ?? "",
       lastName: json['lastName'] ?? "",
+      hasProfile: json['profile'] != null,
+      isVerified: json['isVerified'] ?? false,
     );
   }
 
@@ -36,6 +39,8 @@ class UserModel extends UserEntity {
       firstName: firstName,
       lastName: lastName,
       profilePicture: profilePicture,
+      hasProfile: hasProfile,
+      isVerified: isVerified,
     );
   }
 }

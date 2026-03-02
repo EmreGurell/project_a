@@ -11,6 +11,7 @@
   "error_user_already_exists": "Bu kullanıcı zaten mevcut.",
   "error_invalid_response": "Sunucudan beklenmeyen bir yanıt alındı. Lütfen tekrar deneyin.",
   "error_network_error": "Ağ hatası oluştu. Bağlantınızı kontrol edip tekrar deneyin.",
+  "error_timeout": "Sunucu yanıt vermedi. Lütfen tekrar deneyin.",
   
   "@onboarding_title_1": {
     "description": "----- ONBOARDING -----"

@@ -9,8 +9,8 @@ class BaseResponseModel {
 
   factory BaseResponseModel.fromJson(Map<String, dynamic> json) {
     return BaseResponseModel(
-      success: json['success'],
-      message: json['message'],
+      success: json['success'] ?? false,
+      message: json['message'] ?? json['error'] ?? '',
     );
   }
 }

@@ -66,6 +66,7 @@ final router = GoRouter(
         final extra = state.extra as Map<String, dynamic>;
         return VerifyAccountPage(
           email: extra['email'] as String,
+          userId: extra['userId'] as String?,
           isForReset: extra['isForReset'] as bool? ?? false,
         );
       },

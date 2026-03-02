@@ -1,5 +1,5 @@
 class UserEntity {
-  final int id;
+  final String id;
   final String username;
   final String email;
   final String firstName;
@@ -7,8 +7,19 @@ class UserEntity {
   final String role;
   final String status;
   final String? profilePicture;
+  final bool hasProfile;
+  final bool isVerified;
 
-  UserEntity( {this.profilePicture,required this.id, required this.username, required this.email, required this.firstName, required this.lastName, required this.role, required this.status});
-
-
+  UserEntity({
+    this.profilePicture,
+    required this.id,
+    required this.username,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+    required this.role,
+    required this.status,
+    this.hasProfile = false,
+    this.isVerified = false,
+  });
 }

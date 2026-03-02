@@ -32,6 +32,9 @@ class LoginPage extends StatelessWidget {
           if (state is AuthSuccess) {
             context.go(RouteNames.homeRoute);
           }
+          if (state is AuthSuccessNeedsForm) {
+            context.go(RouteNames.formRoute);
+          }
           if (state is AuthFailure) {
             final mappedMessage = ErrorMapper.getErrorMessage(
               context,

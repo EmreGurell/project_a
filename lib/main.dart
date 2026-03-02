@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/common/bloc/app_entry/app_entry_state_cubit.dart';
 import 'package:project_a/utils/themes/theme.dart';
@@ -12,8 +14,15 @@ final ValueNotifier<Locale> appLocaleNotifier = ValueNotifier(
   const Locale('en'),
 );
 
+final ValueNotifier<int> nutritionLoggedNotifier = ValueNotifier(0);
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: HydratedStorageDirectory(
+      (await getApplicationDocumentsDirectory()).path,
+    ),
+  );
   await setupServiceLocator();
   final savedLocaleCode = await sl<LocalStorageService>().getLocaleCode();
   if (savedLocaleCode != null && savedLocaleCode.isNotEmpty) {
@@ -42,7 +51,7 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [ Locale('en'),Locale('tr'),],
+          supportedLocales: const [Locale('en'), Locale('tr')],
         ),
       ),
     );

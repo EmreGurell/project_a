@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_a/data/models/user/user_form_req_params.dart';
+import 'package:project_a/domain/usecases/user/submit_user_form.dart';
 import 'package:project_a/utils/local_storage/storage_service.dart';
 
 import 'profile_setup_event.dart';
@@ -6,8 +8,12 @@ import 'profile_setup_state.dart';
 
 class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
   final LocalStorageService localService;
+  final SubmitUserFormUseCase submitUserFormUseCase;
 
-  ProfileSetupBloc({required this.localService}) : super(ProfileSetupInitial()) {
+  ProfileSetupBloc({
+    required this.localService,
+    required this.submitUserFormUseCase,
+  }) : super(ProfileSetupInitial()) {
     on<LoadFormProgress>(_onLoad);
     on<AnswerUpdated>(_onAnswerUpdated);
     on<AnswerUpdated2>(_onAnswerUpdated2);
@@ -44,9 +50,19 @@ class ProfileSetupBloc extends Bloc<ProfileSetupEvent, ProfileSetupState> {
   Future<void> _onSubmit(SubmitForm event, Emitter<ProfileSetupState> emit) async {
     final current = state as ProfileSetupInProgress;
     emit(current.copyWith(isSubmitting: true));
-    // TODO: API çağrıları endpoint'ler netleşince eklenecek
-    await localService.setUserFormCompleted();
-    await localService.clearFormData();
-    emit(ProfileSetupSuccess());
+
+    final params = UserFormReqParams.fromFormAnswers(current.answers);
+    final result = await submitUserFormUseCase(params);
+
+    await result.fold(
+      (error) async {
+        emit(ProfileSetupFailure(error));
+      },
+      (_) async {
+        await localService.setUserFormCompleted();
+        await localService.clearFormData();
+        emit(ProfileSetupSuccess());
+      },
+    );
   }
 }

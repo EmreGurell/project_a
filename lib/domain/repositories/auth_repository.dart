@@ -5,10 +5,11 @@ import '../../data/models/auth/reset_password_req_params.dart';
 import '../../data/models/auth/signin_req_params.dart';
 import '../../data/models/auth/signup_req_params.dart';
 import '../../data/models/auth/verify_account_req_params.dart';
+import '../entities/auth_entity.dart';
 
 abstract class AuthRepository {
-  Future<Either> signUp(SignUpReqParam signUpReq);
-  Future<Either> signIn(SignInReqParam signInReq);
+  Future<Either<String, String>> signUp(SignUpReqParam signUpReq);
+  Future<Either<String, AuthEntity>> signIn(SignInReqParam signInReq);
   Future<bool> isAuthenticated();
   Future<Either<String, void>> logout();
   Future<Either<String, void>> forgotPassword(ForgotPasswordReqParam param);

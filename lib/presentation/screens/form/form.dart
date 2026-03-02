@@ -45,6 +45,23 @@ class _FormPageState extends State<FormPage> {
 
   void _onNextPage(ProfileSetupInProgress state) {
     final currentPage = state.currentPage;
+    final page = _pages[currentPage];
+
+    if (page.isRequired && page.fieldKey != null) {
+      final answer = state.answers[page.fieldKey];
+      if (answer == null || answer.trim().isEmpty) {
+        AppSnackbar.showError(context, message: 'Lütfen bu soruyu yanıtlayın');
+        return;
+      }
+      if (page.formType == FormType.dualText && page.fieldKey2 != null) {
+        final answer2 = state.answers[page.fieldKey2];
+        if (answer2 == null || answer2.trim().isEmpty) {
+          AppSnackbar.showError(context, message: 'Lütfen her iki alanı da doldurun');
+          return;
+        }
+      }
+    }
+
     if (currentPage < _pages.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 400),

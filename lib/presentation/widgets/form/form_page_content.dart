@@ -31,6 +31,7 @@ class FormPageContent extends StatefulWidget {
 
 class _FormPageContentState extends State<FormPageContent> {
   String? _selectedChoice;
+  Set<String> _selectedChips = {};
   late final TextEditingController _controller;
   late final TextEditingController _controller2;
 
@@ -38,8 +39,14 @@ class _FormPageContentState extends State<FormPageContent> {
   void initState() {
     super.initState();
     _selectedChoice = widget.currentAnswer;
+    _selectedChips = _parseChips(widget.currentAnswer);
     _controller = TextEditingController(text: widget.currentAnswer ?? '');
     _controller2 = TextEditingController(text: widget.currentAnswer2 ?? '');
+  }
+
+  Set<String> _parseChips(String? value) {
+    if (value == null || value.isEmpty) return {};
+    return value.split(',').toSet();
   }
 
   @override
@@ -47,6 +54,7 @@ class _FormPageContentState extends State<FormPageContent> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.currentAnswer != widget.currentAnswer) {
       _selectedChoice = widget.currentAnswer;
+      _selectedChips = _parseChips(widget.currentAnswer);
       if (widget.page.formType == FormType.text) {
         _controller.text = widget.currentAnswer ?? '';
       }
@@ -165,6 +173,17 @@ class _FormPageContentState extends State<FormPageContent> {
                 ),
                 child: _buildChoiceButtons(widget.page.choices!),
               )
+            // Multi-choice chips
+            else if (widget.page.formType == FormType.multiChoice &&
+                widget.page.choices != null &&
+                widget.page.choices!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: ProjectSizes.pagePadding,
+                  vertical: ProjectSizes.pagePadding,
+                ),
+                child: _buildMultiChoiceChips(widget.page.choices!),
+              )
             else if (widget.page.formType != FormType.text &&
                 widget.page.formType != FormType.dualText)
               const Spacer(),
@@ -254,6 +273,35 @@ class _FormPageContentState extends State<FormPageContent> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildMultiChoiceChips(List<String> choices) {
+    return Wrap(
+      spacing: ProjectSizes.spaceBtwItems,
+      runSpacing: ProjectSizes.spaceBtwItems,
+      children: choices.map((choice) {
+        final isSelected = _selectedChips.contains(choice);
+        return FilterChip(
+          label: Text(choice),
+          selected: isSelected,
+          onSelected: (selected) {
+            setState(() {
+              if (selected) {
+                _selectedChips.add(choice);
+              } else {
+                _selectedChips.remove(choice);
+              }
+            });
+            _notifyChange(_selectedChips.join(','));
+          },
+          selectedColor: ProjectColors.orange.withOpacity(0.2),
+          checkmarkColor: ProjectColors.orange,
+          side: BorderSide(
+            color: isSelected ? ProjectColors.orange : ProjectColors.gray,
+          ),
+        );
+      }).toList(),
     );
   }
 }

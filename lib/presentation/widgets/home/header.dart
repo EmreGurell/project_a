@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:project_a/l10n/app_localizations.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key, this.displayName});
 final String? displayName;
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -23,11 +25,11 @@ final String? displayName;
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Merhaba',
+                  l10n.home_greeting,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 Text(
-                  displayName ?? "Kullanıcı",
+                  displayName ?? l10n.home_default_user,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                 ),
               ],

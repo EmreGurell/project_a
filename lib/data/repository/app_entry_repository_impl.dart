@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:project_a/utils/local_storage/storage_service.dart';
 
 import '../../domain/entities/app_entry_status.dart';
@@ -24,17 +26,32 @@ class AppEntryRepositoryImpl implements AppEntryRepository {
     final isAuthenticated = await authRepository.isAuthenticated();
     if (!isAuthenticated) return AppEntryStatus.unauthenticated;
 
+    // Local flag önce kontrol et — daha önce tamamlandıysa API'ye gitme
+    final localDone = await localService.isUserFormCompleted();
+    dev.log('[AppEntry] localDone=$localDone');
+    if (localDone) return AppEntryStatus.authenticated;
+
     // API'den profil varlığını kontrol et
-    final userResult = await userRepository.getCurrentUser();
-    return await userResult.fold(
-      (_) async {
-        // Network hatası: local flag'e fall back
-        final done = await localService.isUserFormCompleted();
-        return done ? AppEntryStatus.authenticated : AppEntryStatus.profileSetup;
-      },
-      (user) async =>
-          user.hasProfile ? AppEntryStatus.authenticated : AppEntryStatus.profileSetup,
-    );
+    try {
+      final userResult = await userRepository.getCurrentUser();
+      return await userResult.fold(
+        (err) async {
+          dev.log('[AppEntry] getCurrentUser Left: $err');
+          return AppEntryStatus.profileSetup;
+        },
+        (user) async {
+          dev.log('[AppEntry] hasProfile=${user.hasProfile}');
+          if (user.hasProfile) {
+            await localService.setUserFormCompleted();
+            return AppEntryStatus.authenticated;
+          }
+          return AppEntryStatus.profileSetup;
+        },
+      );
+    } catch (e) {
+      dev.log('[AppEntry] exception: $e');
+      return AppEntryStatus.profileSetup;
+    }
   }
 
   @override

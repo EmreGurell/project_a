@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 import 'package:project_a/utils/themes/custom_themes/text_theme.dart';
@@ -22,36 +23,37 @@ class HealthStatsRow extends StatelessWidget {
   static const Color _sleepIconColor = Color(0xFFB8A9C9);
   static const Color _heartIconColor = Color(0xFFE57373);
 
-  List<_StatItem> get _statItems => [
-    _StatItem(
-      icon: PhosphorIconsFill.footprints,
-      iconColor: _stepsIconColor,
-      value: '$steps',
-      label: 'Adım',
-    ),
-    _StatItem(
-      icon: PhosphorIconsFill.moon,
-      iconColor: _sleepIconColor,
-      value: sleepDuration,
-      label: 'Uyku',
-    ),
-    _StatItem(
-      icon: PhosphorIconsFill.heart,
-      iconColor: _heartIconColor,
-      value: '$heartRateBpm',
-      label: 'BPM',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final statItems = [
+      _StatItem(
+        icon: PhosphorIconsFill.footprints,
+        iconColor: _stepsIconColor,
+        value: '$steps',
+        label: l10n.home_stat_steps,
+      ),
+      _StatItem(
+        icon: PhosphorIconsFill.moon,
+        iconColor: _sleepIconColor,
+        value: sleepDuration,
+        label: l10n.home_stat_sleep,
+      ),
+      _StatItem(
+        icon: PhosphorIconsFill.heart,
+        iconColor: _heartIconColor,
+        value: '$heartRateBpm',
+        label: l10n.home_stat_bpm,
+      ),
+    ];
+
     return SizedBox(
       height: 135,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: _statItems.length,
+        itemCount: statItems.length,
         itemBuilder: (context, index) {
-          final item = _statItems[index];
+          final item = statItems[index];
           return _StatCard(
             icon: item.icon,
             iconColor: item.iconColor,

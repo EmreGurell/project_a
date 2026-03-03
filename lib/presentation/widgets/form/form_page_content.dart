@@ -256,41 +256,49 @@ class _FormPageContentState extends State<FormPageContent> {
   }
 
   Widget _buildChoiceButtons(List<String> choices) {
+    final values = widget.page.choiceValues;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ...choices.map(
-          (choice) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: ProjectSizes.spaceBtwItems / 2),
-            child: AnswerChoiceButton(
-              text: choice,
-              isSelected: _selectedChoice == choice,
-              onPressed: () {
-                setState(() => _selectedChoice = choice);
-                _notifyChange(choice);
-              },
-            ),
-          ),
+        ...choices.indexed.map(
+          ((int, String) entry) {
+            final (i, choice) = entry;
+            final apiValue = (values != null && i < values.length) ? values[i] : choice;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: ProjectSizes.spaceBtwItems / 2),
+              child: AnswerChoiceButton(
+                text: choice,
+                isSelected: _selectedChoice == apiValue,
+                onPressed: () {
+                  setState(() => _selectedChoice = apiValue);
+                  _notifyChange(apiValue);
+                },
+              ),
+            );
+          },
         ),
       ],
     );
   }
 
   Widget _buildMultiChoiceChips(List<String> choices) {
+    final values = widget.page.choiceValues;
     return Wrap(
       spacing: ProjectSizes.spaceBtwItems,
       runSpacing: ProjectSizes.spaceBtwItems,
-      children: choices.map((choice) {
-        final isSelected = _selectedChips.contains(choice);
+      children: choices.indexed.map(((int, String) entry) {
+        final (i, choice) = entry;
+        final apiValue = (values != null && i < values.length) ? values[i] : choice;
+        final isSelected = _selectedChips.contains(apiValue);
         return FilterChip(
           label: Text(choice),
           selected: isSelected,
           onSelected: (selected) {
             setState(() {
               if (selected) {
-                _selectedChips.add(choice);
+                _selectedChips.add(apiValue);
               } else {
-                _selectedChips.remove(choice);
+                _selectedChips.remove(apiValue);
               }
             });
             _notifyChange(_selectedChips.join(','));

@@ -5,6 +5,8 @@ enum FormType { image, text, choice, animation, dualText, multiChoice }
 class FormPagesModel {
   final String title;
   final List<String>? choices;
+  // API values corresponding to each choice (same index). If null, choices are used directly.
+  final List<String>? choiceValues;
   final String image;
   final bool hasAdditionalInfo;
   final String? additionalInfoTitle;
@@ -22,6 +24,7 @@ class FormPagesModel {
   FormPagesModel({
     required this.title,
     this.choices,
+    this.choiceValues,
     this.image = "",
     required this.hasAdditionalInfo,
     this.additionalInfoTitle,

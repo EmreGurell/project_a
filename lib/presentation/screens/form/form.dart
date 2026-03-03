@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:project_a/core/router/route_names.dart';
 import 'package:project_a/domain/entities/form/form_pages_data.dart';
 import 'package:project_a/data/models/form/form_pages_model.dart';
+import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/presentation/bloc/form/profile_setup_bloc.dart';
 import 'package:project_a/presentation/bloc/form/profile_setup_event.dart';
 import 'package:project_a/presentation/bloc/form/profile_setup_state.dart';
@@ -28,8 +29,6 @@ class _FormPageState extends State<FormPage> {
   late PageController _pageController;
   bool _controllerReady = false;
 
-  List<FormPagesModel> get _pages => FormPagesData.pages;
-
   @override
   void dispose() {
     if (_controllerReady) _pageController.dispose();
@@ -43,26 +42,27 @@ class _FormPageState extends State<FormPage> {
     }
   }
 
-  void _onNextPage(ProfileSetupInProgress state) {
+  void _onNextPage(ProfileSetupInProgress state, List<FormPagesModel> pages) {
     final currentPage = state.currentPage;
-    final page = _pages[currentPage];
+    final page = pages[currentPage];
+    final l10n = AppLocalizations.of(context)!;
 
     if (page.isRequired && page.fieldKey != null) {
       final answer = state.answers[page.fieldKey];
       if (answer == null || answer.trim().isEmpty) {
-        AppSnackbar.showError(context, message: 'Lütfen bu soruyu yanıtlayın');
+        AppSnackbar.showError(context, message: l10n.form_validation_answer_required);
         return;
       }
       if (page.formType == FormType.dualText && page.fieldKey2 != null) {
         final answer2 = state.answers[page.fieldKey2];
         if (answer2 == null || answer2.trim().isEmpty) {
-          AppSnackbar.showError(context, message: 'Lütfen her iki alanı da doldurun');
+          AppSnackbar.showError(context, message: l10n.form_validation_both_fields_required);
           return;
         }
       }
     }
 
-    if (currentPage < _pages.length - 1) {
+    if (currentPage < pages.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
@@ -85,6 +85,8 @@ class _FormPageState extends State<FormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = FormPagesData.pages(AppLocalizations.of(context)!);
+
     return BlocConsumer<ProfileSetupBloc, ProfileSetupState>(
       listener: (context, state) {
         if (state is ProfileSetupSuccess) {
@@ -95,11 +97,11 @@ class _FormPageState extends State<FormPage> {
         }
       },
       builder: (context, state) {
-        if (state is ProfileSetupInitial) {
+        if (state is! ProfileSetupInProgress) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
 
-        final inProgress = state as ProfileSetupInProgress;
+        final inProgress = state;
         _initController(inProgress.currentPage);
 
         return Scaffold(
@@ -111,7 +113,7 @@ class _FormPageState extends State<FormPage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: LinearProgressIndicator(
-                  value: inProgress.currentPage / _pages.length,
+                  value: inProgress.currentPage / pages.length,
                   minHeight: ProjectSizes.spaceBtwItems,
                   backgroundColor: Colors.grey[300],
                   valueColor: AlwaysStoppedAnimation<Color>(ProjectColors.orange),
@@ -131,18 +133,18 @@ class _FormPageState extends State<FormPage> {
             child: Button3D(
               text: ProjectTexts.formNextButton,
               isLoading: inProgress.isSubmitting,
-              onPressed: () => _onNextPage(inProgress),
+              onPressed: () => _onNextPage(inProgress, pages),
             ),
           ),
           body: PageView.builder(
             controller: _pageController,
-            itemCount: _pages.length,
+            itemCount: pages.length,
             physics: const NeverScrollableScrollPhysics(),
             onPageChanged: (index) {
               context.read<ProfileSetupBloc>().add(FormPageChanged(index));
             },
             itemBuilder: (context, index) {
-              final page = _pages[index];
+              final page = pages[index];
               final answer = inProgress.answers[page.fieldKey];
               final answer2 = inProgress.answers[page.fieldKey2 ?? ''];
               return FormPageContent(

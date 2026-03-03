@@ -32,7 +32,8 @@ class AuthStateCubit extends Cubit<AuthState> {
       await result.fold(
         (failureCode) async => emit(AuthFailure(message: failureCode.toString())),
         (entity) async {
-          if (entity.hasProfile) {
+          final formDone = await localStorageService.isUserFormCompleted();
+          if (formDone) {
             emit(AuthSuccess(token: entity.token));
           } else {
             emit(AuthSuccessNeedsForm());

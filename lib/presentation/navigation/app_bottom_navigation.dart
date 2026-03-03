@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 import 'package:project_a/utils/device/device_utility.dart';
@@ -72,7 +73,7 @@ class _AIAssistantBar extends StatelessWidget {
                       ),
                       SizedBox(width: ProjectSizes.spaceBtwItems / 2),
                       Text(
-                        "Cımbıl AI'a istediğini sor...",
+                        AppLocalizations.of(context)!.nav_ai_prompt,
                         style: Theme.of(context).textTheme.labelSmall!.copyWith(
                           color: ProjectColors.white,
                         ),

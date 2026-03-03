@@ -35,8 +35,8 @@ class CalorieSummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: ProjectColors.mainCardBlue,
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(ProjectSizes.imageAndCardRadius * 2),
-          bottomRight: Radius.circular(ProjectSizes.imageAndCardRadius * 2),
+          topRight: Radius.circular(ProjectSizes.imageAndCardRadius * 10),
+          bottomRight: Radius.circular(ProjectSizes.imageAndCardRadius),
         ),
         border: Border.all(
           color: ProjectColors.secondaryCardBlue.withValues(alpha: 0.5),
@@ -56,11 +56,14 @@ class CalorieSummaryCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  MacroProgressSection(
-                    carbProgress: carbProgress.clamp(0.0, 1.0),
-                    proteinProgress: proteinProgress.clamp(0.0, 1.0),
-                    fatProgress: fatProgress.clamp(0.0, 1.0),
+                  Expanded(
+                    child: MacroProgressSection(
+                      carbProgress: carbProgress.clamp(0.0, 1.0),
+                      proteinProgress: proteinProgress.clamp(0.0, 1.0),
+                      fatProgress: fatProgress.clamp(0.0, 1.0),
+                    ),
                   ),
+                  SizedBox(width: ProjectSizes.spaceBtwItems * 2),
                   CalorieCircleSection(
                     calories: nutrition?.totalCalories.toInt() ?? 0,
                     progress: calorieProgress.clamp(0.0, 1.0),

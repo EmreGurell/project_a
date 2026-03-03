@@ -1,6 +1,7 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:project_a/domain/entities/user/user_entity.dart';
 import 'package:project_a/domain/usecases/home/get_data_by_date.dart';
+import 'package:project_a/utils/local_storage/storage_service.dart';
 import '../../../domain/usecases/user/get_current_user.dart';
 import 'home_event.dart';
 import 'home_state.dart';
@@ -8,11 +9,14 @@ import 'home_state.dart';
 class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
   final GetCurrentUserUseCase getCurrentUser;
   final GetNutritionDataByDate getNutritionDataByDate;
+  final LocalStorageService localStorageService;
 
-  HomeBloc(this.getCurrentUser, this.getNutritionDataByDate)
+  HomeBloc(this.getCurrentUser, this.getNutritionDataByDate, this.localStorageService)
       : super(HomeInitial()) {
     on<LoadCurrentUser>(_onLoadCurrentUser);
     on<ChangeDate>(_onChangeDate);
+    on<IncrementWater>(_onIncrementWater);
+    on<DecrementWater>(_onDecrementWater);
   }
 
   Future<void> _onLoadCurrentUser(
@@ -26,6 +30,7 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
     );
 
     final cached = state;
+    final water = await localStorageService.getWaterGlasses(now);
 
     if (cached is HomeLoaded) {
       // Cache var → anlık göster, nutrition'ı yükle
@@ -34,6 +39,7 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
         dateRange: dateRange,
         clearNutrition: true,
         isNutritionLoading: true,
+        waterGlasses: water,
       ));
 
       // Nutrition her zaman taze çekilir (gün içinde değişir)
@@ -44,12 +50,14 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
           dateRange: dateRange,
           clearNutrition: true,
           isNutritionLoading: false,
+          waterGlasses: water,
         )),
         (nutrition) => emit(cached.copyWith(
           selectedDate: now,
           dateRange: dateRange,
           nutrition: nutrition,
           isNutritionLoading: false,
+          waterGlasses: water,
         )),
       );
 
@@ -76,6 +84,7 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
             dateRange: dateRange,
             selectedDate: now,
             isNutritionLoading: true,
+            waterGlasses: water,
           );
           emit(loaded);
 
@@ -99,10 +108,13 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
     final current = state;
     if (current is! HomeLoaded) return;
 
+    final water = await localStorageService.getWaterGlasses(event.date);
+
     emit(current.copyWith(
       selectedDate: event.date,
       clearNutrition: true,
       isNutritionLoading: true,
+      waterGlasses: water,
     ));
 
     final result = await getNutritionDataByDate(param: event.date);
@@ -111,13 +123,38 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
         selectedDate: event.date,
         clearNutrition: true,
         isNutritionLoading: false,
+        waterGlasses: water,
       )),
       (nutrition) => emit(current.copyWith(
         selectedDate: event.date,
         nutrition: nutrition,
         isNutritionLoading: false,
+        waterGlasses: water,
       )),
     );
+  }
+
+  Future<void> _onIncrementWater(
+    IncrementWater event,
+    Emitter<HomeState> emit,
+  ) async {
+    final current = state;
+    if (current is! HomeLoaded) return;
+    final newCount = current.waterGlasses + 1;
+    await localStorageService.saveWaterGlasses(newCount, current.selectedDate);
+    emit(current.copyWith(waterGlasses: newCount));
+  }
+
+  Future<void> _onDecrementWater(
+    DecrementWater event,
+    Emitter<HomeState> emit,
+  ) async {
+    final current = state;
+    if (current is! HomeLoaded) return;
+    if (current.waterGlasses == 0) return;
+    final newCount = current.waterGlasses - 1;
+    await localStorageService.saveWaterGlasses(newCount, current.selectedDate);
+    emit(current.copyWith(waterGlasses: newCount));
   }
 
   // ── HydratedBloc: sadece UserEntity cache'lenir ──────────────────────────

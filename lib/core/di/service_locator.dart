@@ -103,6 +103,6 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory<ProfileSetupBloc>(() => ProfileSetupBloc(localService: sl(), submitUserFormUseCase: sl()));
   sl.registerFactory<CimbilBloc>(() => CimbilBloc(aiService: sl(), localService: sl()));
   sl.registerFactory<NutritionResultBloc>(() => NutritionResultBloc(aiService: sl(), logNutritionUseCase: sl()));
-  sl.registerFactory<HomeBloc>(()=>HomeBloc(sl(),sl()));
+  sl.registerFactory<HomeBloc>(()=>HomeBloc(sl(), sl(), sl()));
   sl.registerFactory<ProfileBloc>(() => ProfileBloc(getCurrentUserUseCase: sl(), getUserMetricsUseCase: sl()));
 }

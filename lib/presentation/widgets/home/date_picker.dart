@@ -77,7 +77,7 @@ class _DatePickerState extends State<DatePicker> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    _dayName(date),
+                    _dayName(date, context),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -121,8 +121,11 @@ class _DatePickerState extends State<DatePicker> {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
-  String _dayName(DateTime date) {
-    const names = ['PZT', 'SAL', 'ÇRŞ', 'PRŞ', 'CUM', 'CMT', 'PAZ'];
+  String _dayName(DateTime date, BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+    const tr = ['PZT', 'SAL', 'ÇRŞ', 'PRŞ', 'CUM', 'CMT', 'PAZ'];
+    const en = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    final names = locale == 'tr' ? tr : en;
     return names[date.weekday - 1];
   }
 }

@@ -327,4 +327,238 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get scanner_tab_ask_ai => 'Cımbıla Sor';
+
+  @override
+  String get form_intro_title => 'Önce bir kaç soruyla başlayalım!';
+
+  @override
+  String get form_username_title => 'Kullanıcı adın ne olsun?';
+
+  @override
+  String get form_username_hint => 'kullanici_adi';
+
+  @override
+  String get form_goal_title => 'Ana hedefin ne?';
+
+  @override
+  String get form_goal_lose_weight => 'Kilo vermek';
+
+  @override
+  String get form_goal_gain_weight => 'Kilo almak';
+
+  @override
+  String get form_goal_maintain_weight => 'Mevcut kiloyu korumak';
+
+  @override
+  String get form_goal_build_muscle => 'Kas Yapmak';
+
+  @override
+  String get form_gender_title => 'Cinsiyetin nedir?';
+
+  @override
+  String get form_gender_male => 'Erkek';
+
+  @override
+  String get form_gender_female => 'Kadın';
+
+  @override
+  String get form_gender_other => 'Diğer';
+
+  @override
+  String get form_age_title => 'Kaç yaşındasın?';
+
+  @override
+  String get form_age_hint => 'Yaşını gir';
+
+  @override
+  String get form_age_unit => 'yaş';
+
+  @override
+  String get form_body_title => 'Boy ve kilonu gir';
+
+  @override
+  String get form_height_hint => 'Boy';
+
+  @override
+  String get form_weight_hint => 'Kilo';
+
+  @override
+  String get form_height_unit => 'cm';
+
+  @override
+  String get form_weight_unit => 'kg';
+
+  @override
+  String get form_activity_title => 'Aktivite seviyeni seç';
+
+  @override
+  String get form_activity_info_title => 'Aktivite seviyesi nedir?';
+
+  @override
+  String get form_activity_info_desc =>
+      'Aktivite seviyeniz, günlük kalori ihtiyacınızı hesaplamak için kullanılır.\n\n• Hareketsiz: Masa başı iş, az hareket\n• Az Aktif: Haftada 1-3 gün hafif egzersiz\n• Orta Aktif: Haftada 3-5 gün orta egzersiz\n• Çok Aktif: Haftada 6-7 gün yoğun egzersiz';
+
+  @override
+  String get form_activity_sedentary => 'Hareketsiz';
+
+  @override
+  String get form_activity_lightly_active => 'Az Aktif';
+
+  @override
+  String get form_activity_moderately_active => 'Orta Aktif';
+
+  @override
+  String get form_activity_very_active => 'Çok Aktif';
+
+  @override
+  String get form_allergies_title => 'Herhangi bir alerjin var mı?';
+
+  @override
+  String get form_allergy_gluten => 'Gluten';
+
+  @override
+  String get form_allergy_dairy => 'Süt/Laktoz';
+
+  @override
+  String get form_allergy_eggs => 'Yumurta';
+
+  @override
+  String get form_allergy_nuts => 'Kuruyemiş';
+
+  @override
+  String get form_allergy_soy => 'Soya';
+
+  @override
+  String get form_allergy_fish => 'Balık';
+
+  @override
+  String get form_allergy_shellfish => 'Deniz Ürünleri';
+
+  @override
+  String get form_allergy_peanuts => 'Fıstık';
+
+  @override
+  String get form_health_title => 'Herhangi bir sağlık durumun var mı?';
+
+  @override
+  String get form_health_diabetes => 'Diyabet';
+
+  @override
+  String get form_health_hypertension => 'Hipertansiyon';
+
+  @override
+  String get form_health_heart_disease => 'Kalp Hastalığı';
+
+  @override
+  String get form_health_celiac => 'Çölyak';
+
+  @override
+  String get form_health_high_cholesterol => 'Yüksek Kolesterol';
+
+  @override
+  String get form_health_obesity => 'Obezite';
+
+  @override
+  String get form_validation_answer_required => 'Lütfen bu soruyu yanıtlayın';
+
+  @override
+  String get form_validation_both_fields_required =>
+      'Lütfen her iki alanı da doldurun';
+
+  @override
+  String get home_greeting => 'Merhaba';
+
+  @override
+  String get home_default_user => 'Kullanıcı';
+
+  @override
+  String get home_retry => 'Tekrar Dene';
+
+  @override
+  String get home_daily_summary => 'Günlük Özet';
+
+  @override
+  String get home_details => 'Detaylar';
+
+  @override
+  String get home_health_data => 'Sağlık Verileri';
+
+  @override
+  String get home_calorie => 'Kalori';
+
+  @override
+  String get home_water_progress => 'ilerlemen';
+
+  @override
+  String get home_stat_steps => 'Adım';
+
+  @override
+  String get home_stat_sleep => 'Uyku';
+
+  @override
+  String get home_stat_bpm => 'BPM';
+
+  @override
+  String get nav_ai_prompt => 'Cımbıl AI\'a istediğini sor...';
+
+  @override
+  String get profile_title => 'Profil';
+
+  @override
+  String get profile_body_info_title => 'Vücut Bilgileri';
+
+  @override
+  String get profile_height => 'Boy';
+
+  @override
+  String get profile_weight => 'Kilo';
+
+  @override
+  String get profile_age => 'Yaş';
+
+  @override
+  String get profile_age_unit => 'yaş';
+
+  @override
+  String get profile_gender => 'Cinsiyet';
+
+  @override
+  String get profile_not_specified => 'Belirtilmemiş';
+
+  @override
+  String get profile_gender_male => 'Erkek';
+
+  @override
+  String get profile_gender_female => 'Kadın';
+
+  @override
+  String get profile_gender_other => 'Diğer';
+
+  @override
+  String get profile_notifications => 'Bildirimler';
+
+  @override
+  String get profile_sync_health => 'Sağlık Verilerini Senkronize Et';
+
+  @override
+  String get profile_logout => 'Çıkış Yap';
+
+  @override
+  String get profile_logout_confirm_title => 'Çıkış Yap';
+
+  @override
+  String get profile_logout_confirm_message =>
+      'Çıkmak istediğinizden emin misiniz?';
+
+  @override
+  String get profile_logout_cancel => 'İptal';
+
+  @override
+  String get profile_logout_confirm => 'Çıkış Yap';
+
+  @override
+  String get profile_error_prefix => 'Hata';
+
+  @override
+  String get profile_streak_days => 'Gün';
 }

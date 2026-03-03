@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/utils/constants/colors.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 
 class MacroProgressSection extends StatelessWidget {
   const MacroProgressSection({
+    super.key,
     required this.carbProgress,
     required this.proteinProgress,
     required this.fatProgress,
@@ -16,23 +18,25 @@ class MacroProgressSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         _MacroBar(
-          label: 'Karbonhidrat',
+          label: l10n.nutrition_carb,
           progress: carbProgress,
           color: ProjectColors.carbColor,
         ),
+        const SizedBox(height: ProjectSizes.spaceBtwItems), // Çubuklar arası boşluk
         _MacroBar(
-          label: 'Protein',
+          label: l10n.nutrition_protein,
           progress: proteinProgress,
           color: ProjectColors.proteinColor,
         ),
+        const SizedBox(height: ProjectSizes.spaceBtwItems),
         _MacroBar(
-          label: 'Yağ',
+          label: l10n.nutrition_fat,
           progress: fatProgress,
           color: ProjectColors.fatColor,
         ),
@@ -54,31 +58,35 @@ class _MacroBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RotatedBox(
-          quarterTurns: -1,
-          child: LinearPercentIndicator(
-            width: 100,
-            lineHeight: 20,
-            percent: progress.clamp(0.0, 1.0),
-            backgroundColor: ProjectColors.cardGray,
-            progressColor: color,
-            barRadius: const Radius.circular(ProjectSizes.borderRadiusLg),
-            padding: EdgeInsets.zero,
+        SizedBox(
+          width: 40,
+          child: Text(
+            label,
+            textAlign: TextAlign.start,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
           ),
         ),
-        const SizedBox(height: ProjectSizes.spaceBtwItems / 2),
-        SizedBox(
-          width: 50,
-          child: Text(
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-            label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w800),
+        const SizedBox(width: ProjectSizes.spaceBtwItems / 2),
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return LinearPercentIndicator(
+                width: constraints.maxWidth,
+                lineHeight: 12,
+                percent: progress.clamp(0.0, 1.0),
+                backgroundColor: ProjectColors.cardGray,
+                progressColor: color,
+                barRadius: const Radius.circular(ProjectSizes.borderRadiusLg),
+                padding: EdgeInsets.zero,
+                animation: false,
+              );
+            },
           ),
         ),
       ],

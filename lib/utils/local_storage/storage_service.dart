@@ -19,6 +19,10 @@ abstract class LocalStorageService {
   Future<bool> isUserFormCompleted();
   Future<void> setUserFormCompleted();
   Future<void> clearFormData();
+
+  // Water intake
+  Future<void> saveWaterGlasses(int glasses, DateTime date);
+  Future<int> getWaterGlasses(DateTime date);
 }
 
 class LocalStorageServiceImpl implements LocalStorageService {
@@ -115,5 +119,19 @@ class LocalStorageServiceImpl implements LocalStorageService {
     final storage = await SharedPreferences.getInstance();
     await storage.remove(_formAnswersKey);
     await storage.remove(_formCurrentPageKey);
+  }
+
+  @override
+  Future<void> saveWaterGlasses(int glasses, DateTime date) async {
+    final storage = await SharedPreferences.getInstance();
+    final key = 'water_${date.year}_${date.month}_${date.day}';
+    await storage.setInt(key, glasses);
+  }
+
+  @override
+  Future<int> getWaterGlasses(DateTime date) async {
+    final storage = await SharedPreferences.getInstance();
+    final key = 'water_${date.year}_${date.month}_${date.day}';
+    return storage.getInt(key) ?? 0;
   }
 }

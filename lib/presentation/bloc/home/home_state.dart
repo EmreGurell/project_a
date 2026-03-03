@@ -13,6 +13,7 @@ class HomeLoaded extends HomeState {
   final List<DateTime> dateRange;
   final DateTime selectedDate;
   final bool isNutritionLoading;
+  final int waterGlasses;
 
   HomeLoaded({
     required this.user,
@@ -20,6 +21,7 @@ class HomeLoaded extends HomeState {
     required this.selectedDate,
     this.nutrition,
     this.isNutritionLoading = false,
+    this.waterGlasses = 0,
   });
 
   HomeLoaded copyWith({
@@ -29,6 +31,7 @@ class HomeLoaded extends HomeState {
     DateTime? selectedDate,
     List<DateTime>? dateRange,
     bool? isNutritionLoading,
+    int? waterGlasses,
   }) {
     return HomeLoaded(
       user: user ?? this.user,
@@ -36,6 +39,7 @@ class HomeLoaded extends HomeState {
       selectedDate: selectedDate ?? this.selectedDate,
       nutrition: clearNutrition ? null : (nutrition ?? this.nutrition),
       isNutritionLoading: isNutritionLoading ?? this.isNutritionLoading,
+      waterGlasses: waterGlasses ?? this.waterGlasses,
     );
   }
 }

@@ -12,6 +12,7 @@ import 'package:project_a/presentation/widgets/home/date_picker.dart';
 import 'package:project_a/presentation/widgets/home/header.dart';
 import 'package:project_a/presentation/widgets/home/health_stats_row.dart';
 import 'package:project_a/utils/constants/colors.dart';
+import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/utils/constants/sizes.dart';
 import '../../../shared/widgets/buttons/headline.dart';
 
@@ -84,7 +85,11 @@ class _HomeErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded, size: 48, color: ProjectColors.gray),
+            const Icon(
+              Icons.wifi_off_rounded,
+              size: 48,
+              color: ProjectColors.gray,
+            ),
             const SizedBox(height: 16),
             Text(
               message,
@@ -94,7 +99,7 @@ class _HomeErrorView extends StatelessWidget {
             const SizedBox(height: 24),
             TextButton(
               onPressed: () => context.read<HomeBloc>().add(LoadCurrentUser()),
-              child: const Text('Tekrar Dene'),
+              child: Text(AppLocalizations.of(context)!.home_retry),
             ),
           ],
         ),
@@ -147,7 +152,9 @@ class _HomeHeaderSection extends StatelessWidget {
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           if (state is HomeLoaded) {
-            return Header(displayName: "${state.user.firstName} ${state.user.lastName}");
+            return Header(
+              displayName: "${state.user.firstName} ${state.user.lastName}",
+            );
           }
           return const Header();
         },
@@ -211,11 +218,16 @@ class _DailySummarySliver extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: ProjectSizes.pagePadding),
-              child: Headline(
-                title: 'Günlük Özet',
-                subtitle: 'Detaylar',
-                icon: Icons.arrow_forward_ios,
-                onTap: () {},
+              child: Builder(
+                builder: (context) {
+                  final l10n = AppLocalizations.of(context)!;
+                  return Headline(
+                    title: l10n.home_daily_summary,
+                    subtitle: l10n.home_details,
+                    icon: Icons.arrow_forward_ios,
+                    onTap: () {},
+                  );
+                },
               ),
             ),
             const SizedBox(height: ProjectSizes.spaceBtwItems),
@@ -231,9 +243,14 @@ class _DailySummarySliver extends StatelessWidget {
               },
             ),
             const SizedBox(height: ProjectSizes.spaceBtwItems),
-            const Padding(
-              padding: EdgeInsets.only(right: ProjectSizes.pagePadding),
-              child: WaterIntakeCard(),
+            Padding(
+              padding: const EdgeInsets.only(right: ProjectSizes.pagePadding),
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  final glasses = state is HomeLoaded ? state.waterGlasses : 0;
+                  return WaterIntakeCard(currentGlasses: glasses);
+                },
+              ),
             ),
             const SizedBox(height: ProjectSizes.spaceBtwItems),
           ],
@@ -253,7 +270,10 @@ class _HealthStatsSliver extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Headline(title: 'Sağlık Verileri', onTap: () {}),
+            Headline(
+              title: AppLocalizations.of(context)!.home_health_data,
+              onTap: () {},
+            ),
             const SizedBox(height: 12),
             const HealthStatsRow(),
             const SizedBox(height: 24),
@@ -263,5 +283,3 @@ class _HealthStatsSliver extends StatelessWidget {
     );
   }
 }
-
-

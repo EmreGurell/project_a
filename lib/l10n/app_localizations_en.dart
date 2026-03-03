@@ -323,4 +323,238 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanner_tab_ask_ai => 'Ask Cimbil';
+
+  @override
+  String get form_intro_title => 'Let\'s start with a few questions!';
+
+  @override
+  String get form_username_title => 'What should your username be?';
+
+  @override
+  String get form_username_hint => 'username';
+
+  @override
+  String get form_goal_title => 'What is your main goal?';
+
+  @override
+  String get form_goal_lose_weight => 'Lose weight';
+
+  @override
+  String get form_goal_gain_weight => 'Gain weight';
+
+  @override
+  String get form_goal_maintain_weight => 'Maintain current weight';
+
+  @override
+  String get form_goal_build_muscle => 'Build muscle';
+
+  @override
+  String get form_gender_title => 'What is your gender?';
+
+  @override
+  String get form_gender_male => 'Male';
+
+  @override
+  String get form_gender_female => 'Female';
+
+  @override
+  String get form_gender_other => 'Other';
+
+  @override
+  String get form_age_title => 'How old are you?';
+
+  @override
+  String get form_age_hint => 'Enter your age';
+
+  @override
+  String get form_age_unit => 'years';
+
+  @override
+  String get form_body_title => 'Enter your height and weight';
+
+  @override
+  String get form_height_hint => 'Height';
+
+  @override
+  String get form_weight_hint => 'Weight';
+
+  @override
+  String get form_height_unit => 'cm';
+
+  @override
+  String get form_weight_unit => 'kg';
+
+  @override
+  String get form_activity_title => 'Select your activity level';
+
+  @override
+  String get form_activity_info_title => 'What is activity level?';
+
+  @override
+  String get form_activity_info_desc =>
+      'Your activity level is used to calculate your daily calorie needs.\n\n• Sedentary: Desk job, little movement\n• Lightly Active: Light exercise 1-3 days/week\n• Moderately Active: Moderate exercise 3-5 days/week\n• Very Active: Intense exercise 6-7 days/week';
+
+  @override
+  String get form_activity_sedentary => 'Sedentary';
+
+  @override
+  String get form_activity_lightly_active => 'Lightly Active';
+
+  @override
+  String get form_activity_moderately_active => 'Moderately Active';
+
+  @override
+  String get form_activity_very_active => 'Very Active';
+
+  @override
+  String get form_allergies_title => 'Do you have any allergies?';
+
+  @override
+  String get form_allergy_gluten => 'Gluten';
+
+  @override
+  String get form_allergy_dairy => 'Dairy/Lactose';
+
+  @override
+  String get form_allergy_eggs => 'Eggs';
+
+  @override
+  String get form_allergy_nuts => 'Tree Nuts';
+
+  @override
+  String get form_allergy_soy => 'Soy';
+
+  @override
+  String get form_allergy_fish => 'Fish';
+
+  @override
+  String get form_allergy_shellfish => 'Shellfish';
+
+  @override
+  String get form_allergy_peanuts => 'Peanuts';
+
+  @override
+  String get form_health_title => 'Do you have any health conditions?';
+
+  @override
+  String get form_health_diabetes => 'Diabetes';
+
+  @override
+  String get form_health_hypertension => 'Hypertension';
+
+  @override
+  String get form_health_heart_disease => 'Heart Disease';
+
+  @override
+  String get form_health_celiac => 'Celiac';
+
+  @override
+  String get form_health_high_cholesterol => 'High Cholesterol';
+
+  @override
+  String get form_health_obesity => 'Obesity';
+
+  @override
+  String get form_validation_answer_required => 'Please answer this question';
+
+  @override
+  String get form_validation_both_fields_required =>
+      'Please fill in both fields';
+
+  @override
+  String get home_greeting => 'Hello';
+
+  @override
+  String get home_default_user => 'User';
+
+  @override
+  String get home_retry => 'Retry';
+
+  @override
+  String get home_daily_summary => 'Daily Summary';
+
+  @override
+  String get home_details => 'Details';
+
+  @override
+  String get home_health_data => 'Health Data';
+
+  @override
+  String get home_calorie => 'Calories';
+
+  @override
+  String get home_water_progress => 'progress';
+
+  @override
+  String get home_stat_steps => 'Steps';
+
+  @override
+  String get home_stat_sleep => 'Sleep';
+
+  @override
+  String get home_stat_bpm => 'BPM';
+
+  @override
+  String get nav_ai_prompt => 'Ask Cimbil AI anything...';
+
+  @override
+  String get profile_title => 'Profile';
+
+  @override
+  String get profile_body_info_title => 'Body Info';
+
+  @override
+  String get profile_height => 'Height';
+
+  @override
+  String get profile_weight => 'Weight';
+
+  @override
+  String get profile_age => 'Age';
+
+  @override
+  String get profile_age_unit => 'y/o';
+
+  @override
+  String get profile_gender => 'Gender';
+
+  @override
+  String get profile_not_specified => 'Not specified';
+
+  @override
+  String get profile_gender_male => 'Male';
+
+  @override
+  String get profile_gender_female => 'Female';
+
+  @override
+  String get profile_gender_other => 'Other';
+
+  @override
+  String get profile_notifications => 'Notifications';
+
+  @override
+  String get profile_sync_health => 'Sync Health Data';
+
+  @override
+  String get profile_logout => 'Log Out';
+
+  @override
+  String get profile_logout_confirm_title => 'Log Out';
+
+  @override
+  String get profile_logout_confirm_message =>
+      'Are you sure you want to log out?';
+
+  @override
+  String get profile_logout_cancel => 'Cancel';
+
+  @override
+  String get profile_logout_confirm => 'Log Out';
+
+  @override
+  String get profile_error_prefix => 'Error';
+
+  @override
+  String get profile_streak_days => 'Days';
 }

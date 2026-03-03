@@ -697,6 +697,468 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ask Cimbil'**
   String get scanner_tab_ask_ai;
+
+  /// ----- FORM PAGES -----
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s start with a few questions!'**
+  String get form_intro_title;
+
+  /// No description provided for @form_username_title.
+  ///
+  /// In en, this message translates to:
+  /// **'What should your username be?'**
+  String get form_username_title;
+
+  /// No description provided for @form_username_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'username'**
+  String get form_username_hint;
+
+  /// No description provided for @form_goal_title.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your main goal?'**
+  String get form_goal_title;
+
+  /// No description provided for @form_goal_lose_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Lose weight'**
+  String get form_goal_lose_weight;
+
+  /// No description provided for @form_goal_gain_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Gain weight'**
+  String get form_goal_gain_weight;
+
+  /// No description provided for @form_goal_maintain_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintain current weight'**
+  String get form_goal_maintain_weight;
+
+  /// No description provided for @form_goal_build_muscle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build muscle'**
+  String get form_goal_build_muscle;
+
+  /// No description provided for @form_gender_title.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your gender?'**
+  String get form_gender_title;
+
+  /// No description provided for @form_gender_male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get form_gender_male;
+
+  /// No description provided for @form_gender_female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get form_gender_female;
+
+  /// No description provided for @form_gender_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get form_gender_other;
+
+  /// No description provided for @form_age_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How old are you?'**
+  String get form_age_title;
+
+  /// No description provided for @form_age_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your age'**
+  String get form_age_hint;
+
+  /// No description provided for @form_age_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'years'**
+  String get form_age_unit;
+
+  /// No description provided for @form_body_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your height and weight'**
+  String get form_body_title;
+
+  /// No description provided for @form_height_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get form_height_hint;
+
+  /// No description provided for @form_weight_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get form_weight_hint;
+
+  /// No description provided for @form_height_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get form_height_unit;
+
+  /// No description provided for @form_weight_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get form_weight_unit;
+
+  /// No description provided for @form_activity_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your activity level'**
+  String get form_activity_title;
+
+  /// No description provided for @form_activity_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'What is activity level?'**
+  String get form_activity_info_title;
+
+  /// No description provided for @form_activity_info_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your activity level is used to calculate your daily calorie needs.\n\n• Sedentary: Desk job, little movement\n• Lightly Active: Light exercise 1-3 days/week\n• Moderately Active: Moderate exercise 3-5 days/week\n• Very Active: Intense exercise 6-7 days/week'**
+  String get form_activity_info_desc;
+
+  /// No description provided for @form_activity_sedentary.
+  ///
+  /// In en, this message translates to:
+  /// **'Sedentary'**
+  String get form_activity_sedentary;
+
+  /// No description provided for @form_activity_lightly_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Lightly Active'**
+  String get form_activity_lightly_active;
+
+  /// No description provided for @form_activity_moderately_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderately Active'**
+  String get form_activity_moderately_active;
+
+  /// No description provided for @form_activity_very_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Active'**
+  String get form_activity_very_active;
+
+  /// No description provided for @form_allergies_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you have any allergies?'**
+  String get form_allergies_title;
+
+  /// No description provided for @form_allergy_gluten.
+  ///
+  /// In en, this message translates to:
+  /// **'Gluten'**
+  String get form_allergy_gluten;
+
+  /// No description provided for @form_allergy_dairy.
+  ///
+  /// In en, this message translates to:
+  /// **'Dairy/Lactose'**
+  String get form_allergy_dairy;
+
+  /// No description provided for @form_allergy_eggs.
+  ///
+  /// In en, this message translates to:
+  /// **'Eggs'**
+  String get form_allergy_eggs;
+
+  /// No description provided for @form_allergy_nuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Tree Nuts'**
+  String get form_allergy_nuts;
+
+  /// No description provided for @form_allergy_soy.
+  ///
+  /// In en, this message translates to:
+  /// **'Soy'**
+  String get form_allergy_soy;
+
+  /// No description provided for @form_allergy_fish.
+  ///
+  /// In en, this message translates to:
+  /// **'Fish'**
+  String get form_allergy_fish;
+
+  /// No description provided for @form_allergy_shellfish.
+  ///
+  /// In en, this message translates to:
+  /// **'Shellfish'**
+  String get form_allergy_shellfish;
+
+  /// No description provided for @form_allergy_peanuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Peanuts'**
+  String get form_allergy_peanuts;
+
+  /// No description provided for @form_health_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you have any health conditions?'**
+  String get form_health_title;
+
+  /// No description provided for @form_health_diabetes.
+  ///
+  /// In en, this message translates to:
+  /// **'Diabetes'**
+  String get form_health_diabetes;
+
+  /// No description provided for @form_health_hypertension.
+  ///
+  /// In en, this message translates to:
+  /// **'Hypertension'**
+  String get form_health_hypertension;
+
+  /// No description provided for @form_health_heart_disease.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart Disease'**
+  String get form_health_heart_disease;
+
+  /// No description provided for @form_health_celiac.
+  ///
+  /// In en, this message translates to:
+  /// **'Celiac'**
+  String get form_health_celiac;
+
+  /// No description provided for @form_health_high_cholesterol.
+  ///
+  /// In en, this message translates to:
+  /// **'High Cholesterol'**
+  String get form_health_high_cholesterol;
+
+  /// No description provided for @form_health_obesity.
+  ///
+  /// In en, this message translates to:
+  /// **'Obesity'**
+  String get form_health_obesity;
+
+  /// No description provided for @form_validation_answer_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please answer this question'**
+  String get form_validation_answer_required;
+
+  /// No description provided for @form_validation_both_fields_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in both fields'**
+  String get form_validation_both_fields_required;
+
+  /// ----- HOME PAGE -----
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get home_greeting;
+
+  /// No description provided for @home_default_user.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get home_default_user;
+
+  /// No description provided for @home_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get home_retry;
+
+  /// No description provided for @home_daily_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Summary'**
+  String get home_daily_summary;
+
+  /// No description provided for @home_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get home_details;
+
+  /// No description provided for @home_health_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Data'**
+  String get home_health_data;
+
+  /// No description provided for @home_calorie.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories'**
+  String get home_calorie;
+
+  /// No description provided for @home_water_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'progress'**
+  String get home_water_progress;
+
+  /// No description provided for @home_stat_steps.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps'**
+  String get home_stat_steps;
+
+  /// No description provided for @home_stat_sleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep'**
+  String get home_stat_sleep;
+
+  /// No description provided for @home_stat_bpm.
+  ///
+  /// In en, this message translates to:
+  /// **'BPM'**
+  String get home_stat_bpm;
+
+  /// ----- NAVIGATION -----
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Cimbil AI anything...'**
+  String get nav_ai_prompt;
+
+  /// ----- PROFILE PAGE -----
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile_title;
+
+  /// No description provided for @profile_body_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Info'**
+  String get profile_body_info_title;
+
+  /// No description provided for @profile_height.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get profile_height;
+
+  /// No description provided for @profile_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get profile_weight;
+
+  /// No description provided for @profile_age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get profile_age;
+
+  /// No description provided for @profile_age_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'y/o'**
+  String get profile_age_unit;
+
+  /// No description provided for @profile_gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get profile_gender;
+
+  /// No description provided for @profile_not_specified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get profile_not_specified;
+
+  /// No description provided for @profile_gender_male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get profile_gender_male;
+
+  /// No description provided for @profile_gender_female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get profile_gender_female;
+
+  /// No description provided for @profile_gender_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get profile_gender_other;
+
+  /// No description provided for @profile_notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get profile_notifications;
+
+  /// No description provided for @profile_sync_health.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Health Data'**
+  String get profile_sync_health;
+
+  /// No description provided for @profile_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get profile_logout;
+
+  /// No description provided for @profile_logout_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get profile_logout_confirm_title;
+
+  /// No description provided for @profile_logout_confirm_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out?'**
+  String get profile_logout_confirm_message;
+
+  /// No description provided for @profile_logout_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get profile_logout_cancel;
+
+  /// No description provided for @profile_logout_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get profile_logout_confirm;
+
+  /// No description provided for @profile_error_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get profile_error_prefix;
+
+  /// No description provided for @profile_streak_days.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get profile_streak_days;
 }
 
 class _AppLocalizationsDelegate

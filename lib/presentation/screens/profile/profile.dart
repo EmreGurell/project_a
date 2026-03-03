@@ -5,6 +5,7 @@ import 'package:project_a/common/bloc/auth/auth_state_cubit.dart';
 import 'package:project_a/presentation/bloc/profile/profile_bloc.dart';
 import 'package:project_a/presentation/bloc/profile/profile_state.dart';
 import 'package:project_a/core/router/route_names.dart';
+import 'package:project_a/l10n/app_localizations.dart';
 import 'package:project_a/shared/widgets/appbar/custom_app_bar.dart';
 import 'package:project_a/presentation/widgets/profile/profile_header_card.dart';
 import 'package:project_a/presentation/widgets/profile/stats_cards_row.dart';
@@ -21,6 +22,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return MultiBlocListener(
       listeners: [
         BlocListener<AuthStateCubit, AuthState>(
@@ -33,14 +35,14 @@ class ProfilePage extends StatelessWidget {
       ],
       child: Scaffold(
         appBar: CustomAppBar(
-          title: 'Profil',
+          title: l10n.profile_title,
           rightIcon: Icons.settings_outlined,
           onRightTap: () {},
         ),
         body: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is ProfileFailure) {
-              return Center(child: Text('Hata: ${state.message}'));
+              return Center(child: Text('${l10n.profile_error_prefix}: ${state.message}'));
             }
 
             if (state is ProfileLoading) {
@@ -73,7 +75,7 @@ class ProfilePage extends StatelessWidget {
                       StatCard(
                         title: 'STREAK',
                         value: metrics != null ? '${metrics.currentStreak}' : '--',
-                        subtitle: 'Days',
+                        subtitle: l10n.profile_streak_days,
                         icon: Icons.local_fire_department,
                         subtitleColor: Colors.grey,
                       ),
@@ -89,36 +91,36 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: ProjectSizes.spaceBtwSections),
                   ProfileBodyCard(
-                    title: 'Vücut Bilgileri',
+                    title: l10n.profile_body_info_title,
                     items: [
                       BodyItem(
                         icon: Icons.height,
-                        title: 'Boy',
+                        title: l10n.profile_height,
                         value: metrics != null && metrics.height > 0
                             ? '${metrics.height.toInt()} cm'
-                            : 'Belirtilmemiş',
+                            : l10n.profile_not_specified,
                         bgColor: ProjectColors.mainCardBlue,
                       ),
                       BodyItem(
                         icon: Icons.monitor_weight,
-                        title: 'Kilo',
+                        title: l10n.profile_weight,
                         value: metrics != null && metrics.weight > 0
                             ? '${metrics.weight.toInt()} kg'
-                            : 'Belirtilmemiş',
+                            : l10n.profile_not_specified,
                         bgColor: ProjectColors.purple,
                       ),
                       BodyItem(
                         icon: Icons.cake,
-                        title: 'Yaş',
+                        title: l10n.profile_age,
                         value: metrics?.age != null
-                            ? '${metrics!.age} yaş'
-                            : 'Belirtilmemiş',
+                            ? '${metrics!.age} ${l10n.profile_age_unit}'
+                            : l10n.profile_not_specified,
                         bgColor: ProjectColors.orange,
                       ),
                       BodyItem(
                         icon: Icons.person_outline,
-                        title: 'Cinsiyet',
-                        value: _mapGenderDisplay(metrics?.gender),
+                        title: l10n.profile_gender,
+                        value: _mapGenderDisplay(l10n, metrics?.gender),
                         bgColor: ProjectColors.orange,
                       ),
                     ],
@@ -128,21 +130,19 @@ class ProfilePage extends StatelessWidget {
                     items: [
                       SettingsToggleItem(
                         icon: Icons.notifications_outlined,
-                        title: 'Bildirimler',
+                        title: l10n.profile_notifications,
                         value: true,
                         onChanged: (value) {},
                       ),
                       SettingsNavItem(
                         icon: Icons.sync,
-                        title: 'Sağlık Verilerini Senkronize Et',
+                        title: l10n.profile_sync_health,
                         onTap: () {},
                       ),
                       SettingsActionItem(
                         icon: Icons.logout,
-                        title: 'Çıkış Yap',
-                        onTap: () {
-                          context.read<AuthStateCubit>().logout();
-                        },
+                        title: l10n.profile_logout,
+                        onTap: () => _showLogoutDialog(context, l10n),
                       ),
                     ],
                   ),
@@ -157,16 +157,39 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  String _mapGenderDisplay(String? gender) {
+  void _showLogoutDialog(BuildContext context, AppLocalizations l10n) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.profile_logout_confirm_title),
+        content: Text(l10n.profile_logout_confirm_message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.profile_logout_cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              context.read<AuthStateCubit>().logout();
+            },
+            child: Text(l10n.profile_logout_confirm),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _mapGenderDisplay(AppLocalizations l10n, String? gender) {
     switch (gender) {
       case 'male':
-        return 'Erkek';
+        return l10n.profile_gender_male;
       case 'female':
-        return 'Kadın';
+        return l10n.profile_gender_female;
       case 'other':
-        return 'Diğer';
+        return l10n.profile_gender_other;
       default:
-        return 'Belirtilmemiş';
+        return l10n.profile_not_specified;
     }
   }
 }
